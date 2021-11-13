@@ -1,6 +1,6 @@
 ## command
 $ docker-compose up -d --build
-$ docker-compose exec rust bash
+$ docker-compose exec rust bash  
   not need(docker-compose run rust bash)
 
 cargo new --bin helloworld
