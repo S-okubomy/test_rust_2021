@@ -1,0 +1,13 @@
+version: '3'
+ 
+services:
+  rust:
+    container_name: rust_env
+    build: .
+    tty: true
+    image: myrust
+    user: 1000:1000
+    environment:
+      USER: okubo
+    volumes:
+      - .:/usr/src/myapp
