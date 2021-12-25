@@ -10,10 +10,11 @@ RUN set -xe; groupadd -g ${GID} ${GNAME}; \
 COPY dot.vimrc /home/${UNAME}/.vimrc
 RUN set -xe; chown ${GNAME}:${UNAME} /home/${UNAME}/.vimrc
 USER ${UNAME}
-Run rustup toolchain add nightly
-RUN cargo +nightly install racer
-RUN rustup component add rust-src
-RUN rustup component add rustfmt-preview
-RUN set -xe; curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh -o /tmp/installer.sh; sh /tmp/installer.sh ~/.vim/dein
+
+RUN rustup toolchain add nightly \
+    && cargo +nightly install racer \
+    && rustup component add rust-src \
+    && rustup component add rustfmt-preview \
+    && set -xe; curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh -o /tmp/installer.sh; sh /tmp/installer.sh ~/.vim/dein
 WORKDIR /usr/src/myapp
 COPY . .
