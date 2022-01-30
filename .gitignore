@@ -18,3 +18,6 @@ Cargo.lock
 *.pdb
 
 # End of https://www.toptal.com/developers/gitignore/api/rust
+test_web1/src/cert/cert.pem
+test_web1/src/cert/key.pem
+test_web1/src/cert/nopass.pem
