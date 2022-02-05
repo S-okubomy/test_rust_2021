@@ -6,6 +6,7 @@ use regex::Regex;
 enum PramType {
     IoInput { inp_text: String },
     CmdArgs { file_path: String, file_text: String },
+    NoPram,
 }
 
 impl PramType {
@@ -13,36 +14,39 @@ impl PramType {
         match &*self {
             PramType::IoInput { inp_text: inp } => println!("{}", inp.replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]")),
             PramType::CmdArgs { file_path: f_path, file_text: f_text } => println!("{}: {}", f_path, f_text.replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]")),
+            PramType::NoPram => {
+                println!("パラメータを指定してください！！！");
+                println!("./my_grep 検索文字 パス");
+                println!("(例)  ./my_grep1 \".*abc[\\s\\S]*?def\" /home/okb/デスクトップ");
+                println!("echo 対象文字 | ./my_grep1 検索文字");
+            },
         }
     }
 }
 
 // 使用例（正規表現）
 // ./my_grep1 "ギ.*abc[\s\S]*?def" /home/okb/デスクトップ
+// echo "test abcde" | ./my_grep1 ".*bc.*"
 
 fn main() {
     // コマンドライン引数を得る --- (*1)
     let args: Vec<String> = env::args().collect();
 
-    // let mut pram_type: PramType ;
+    if args.len() == 1 {
+        let p_type = PramType::NoPram;
+        p_type.custom_print();
+        return;
+    }
+
     if args.len() == 2 {
         let text = input_str();
         let serch_word = &args[1];
 
         for caps in get_text(&serch_word, &text) {
-
             let p_type = PramType::IoInput { inp_text: caps[0].to_string() };
             p_type.custom_print();
-
-            // println!("{}: {}", file_path, &caps[0].replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]"));
         }
-    } else {
-        if args.len() == 2 {
-            println!("パラメータを指定してください！！！");
-            println!("./my_grep 検索文字 パス");
-            return;
-        }
-        // pram_type = PramType::IoInput {inp_text: input_str()};
+    } else if args.len() == 3 {
         let serch_word = &args[1];
         let target_dir = &args[2];
         
@@ -50,8 +54,11 @@ fn main() {
         let target = path::PathBuf::from(target_dir);
         // println!("{}", target_dir);
         tree(&serch_word, &target, 0);
+    } else {
+        let p_type = PramType::NoPram;
+        p_type.custom_print();
+        return;
     }
-
 }
 
 // 再帰的にファイル一覧を表示 --- (*2)
@@ -71,17 +78,9 @@ fn tree(serch_word: &str, target: &path::PathBuf, level: isize) {
         let text: String = fs::read_to_string(&path).unwrap_or("読み込み失敗".to_string());
         let file_path: &str = &path.into_os_string().into_string().unwrap();
 
-        // 正規表現で抽出する
-        // let re = Regex::new(&serch_word).unwrap();
-        // for caps in re.captures_iter(&text) {
-        //     println!("{}: {}", file_path, &caps[0].replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]"));
-        // }
         for caps in get_text(&serch_word, &text) {
-
             let p_type = PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() };
             p_type.custom_print();
-
-            // println!("{}: {}", file_path, &caps[0].replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]"));
         }
     }
 }
@@ -100,12 +99,3 @@ fn input_str() -> String {
         .expect("入力エラー");
     s.trim_end().to_string()
 }
-
-// // 標準入力から実数を入力(失敗したらdefを返す) --- (*4)
-// fn input_f() -> &str {
-//     let s = input_str();
-//     match s.trim() {
-//         Ok(v) => v,
-//         Err(_) => "エラーです。",
-//     }
-// }
