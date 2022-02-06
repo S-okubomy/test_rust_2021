@@ -17,9 +17,9 @@ impl PramType {
             PramType::CmdArgs { file_path: f_path, file_text: f_text } => println!("{}: {}", f_path, f_text.replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]")),
             PramType::NoPram => {
                 println!("パラメータを指定してください！！！");
-                println!("./my_grep 検索文字 パス");
-                println!("(例)  ./my_grep1 \".*abc[\\s\\S]*?def\" /home/okb/デスクトップ");
-                println!("echo 対象文字 | ./my_grep1 検索文字");
+                println!("./my_grep 検索文字（正規表現） パス");
+                println!("(例)  ./my_grep1 \".*(?i)abc[\\s\\S]*?def\" /home/okb/デスクトップ");
+                println!("echo 対象文字 | ./my_grep1 検索文字（正規表現）");
             },
         }
     }
@@ -39,7 +39,6 @@ fn main() {
     }
 
     if args.len() == 2 {
-        // let text = input_str();
         let text = inp_string::<String>();
         let serch_word = &args[1];
 
@@ -52,16 +51,11 @@ fn main() {
         
         // PathBufに変換
         let target = path::PathBuf::from(target_dir);
-        // println!("{}", target_dir);
         tree(&serch_word, &target, 0);
     } else {
-        // let p_type = PramType::NoPram;
-        // p_type.custom_print();
         out_print(PramType::NoPram);
         return;
     }
-
-    // read_vec2::<String>(10);
 }
 
 fn out_print(p_type: PramType) {
@@ -86,9 +80,7 @@ fn tree(serch_word: &str, target: &path::PathBuf, level: isize) {
         let file_path: &str = &path.into_os_string().into_string().unwrap();
 
         for caps in get_text(&serch_word, &text) {
-            // let p_type = PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() };
             out_print(PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() });
-            // p_type.custom_print();
         }
     }
 }
@@ -98,16 +90,6 @@ fn get_text<'a>(serch_word: &str, text: &'a str) -> std::vec::Vec<regex::Capture
     let re = Regex::new(&serch_word).unwrap();
     re.captures_iter(text).collect::<Vec<regex::Captures<'a>>>()
 }
-
-// 標準入力から文字列を得る --- (*3)
-// fn input_str() -> String {
-//     let mut s = String::new();
-//     let stdin = io::read_to_string(&mut io::stdin())?;
-//     io::read_to_string(&mut s)
-//         .expect("入力エラー");
-//     s.trim_end().to_string()
-// }
-
 
 #[allow(dead_code)]
 fn read_vec2<T>(n: u32) -> Vec<Vec<T>> 
@@ -127,23 +109,11 @@ fn read_vec2<T>(n: u32) -> Vec<Vec<T>>
 fn inp_string<T>() -> String
     where T: std::str::FromStr
 {
-    // let mut v2 = Vec::new();
-    // for _ in 0..n {
-    //     let mut s = String::new();
-    //     io::stdin().read_line(&mut s).ok();
-    //     // let v = s.trim();
-    //     v2.push(s);
-    // }
-    // v2.iter().cloned().collect::<String>()
-
-
-
     let stdin = io::stdin();
     let mut v2 = Vec::new();
     for line in stdin.lock().lines() {
         v2.push(line.unwrap());
     }
 
-    // v2.iter().cloned().collect::<String>()
     v2.join("\n")
 }
