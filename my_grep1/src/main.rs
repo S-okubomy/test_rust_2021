@@ -21,40 +21,59 @@ impl PramType {
                 println!("(例)  ./my_grep1 \".*(?i)abc[\\s\\S]*?def\" /home/okb/デスクトップ");
                 println!("echo 対象文字 | ./my_grep1 検索文字（正規表現）");
             },
+        }   
+    }
+}
+
+enum Conf {
+    Io { query: String, trg_text: String },
+    File { query: String, f_root_path: String },
+}
+
+impl Conf {
+    fn new(args: &Vec<String>) -> Result<Conf, PramType> {
+        if args.len() == 1 {
+            return Err(PramType::NoPram)
         }
+
+        if args.len() == 2 {
+            let text = inp_string::<String>();
+            Ok(Conf::Io { query: args[1].to_string(), trg_text: text })
+        } else if args.len() == 3 {
+            Ok(Conf::File { query: args[1].to_string(), f_root_path: args[2].to_string() })
+        } else {
+            return Err(PramType::NoPram)
+        }
+
     }
 }
 
 // 使用例（正規表現）
 // ./my_grep1 "ギ.*abc[\s\S]*?def" /home/okb/デスクトップ
 // echo "test abcde" | ./my_grep1 ".*bc.*"
-
 fn main() {
     // コマンドライン引数を得る --- (*1)
     let args: Vec<String> = env::args().collect();
+    let conf: Conf = Conf::new(&args).unwrap_or_else(|err| {
+        out_print(err);
+        std::process::exit(1);
+    });
 
-    if args.len() == 1 {
-        out_print(PramType::NoPram);
-        return;
-    }
+    run(conf);
+}
 
-    if args.len() == 2 {
-        let text = inp_string::<String>();
-        let serch_word = &args[1];
-
-        for caps in get_text(&serch_word, &text) {
-            out_print(PramType::IoInput { inp_text: caps[0].to_string() })
-        }
-    } else if args.len() == 3 {
-        let serch_word = &args[1];
-        let target_dir = &args[2];
-        
-        // PathBufに変換
-        let target = path::PathBuf::from(target_dir);
-        tree(&serch_word, &target, 0);
-    } else {
-        out_print(PramType::NoPram);
-        return;
+fn run(conf: Conf) {
+    match conf {
+        Conf::Io { query, trg_text: text} => {
+            for caps in get_text(&query, &text) {
+                out_print(PramType::IoInput { inp_text: caps[0].to_string() })
+            }
+        },
+        Conf::File { query, f_root_path: r_path } => {            
+            // PathBufに変換
+            let target = path::PathBuf::from(r_path);
+            tree(&query, &target, 0);
+        },
     }
 }
 
