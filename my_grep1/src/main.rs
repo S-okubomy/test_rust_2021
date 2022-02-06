@@ -1,3 +1,4 @@
+use std::io::BufRead;
 use std::{env, path, fs, io};
 use regex::Regex;
 
@@ -11,7 +12,7 @@ enum PramType {
 
 impl PramType {
     fn custom_print(&self) {
-        match &*self {
+        match &self {
             PramType::IoInput { inp_text: inp } => println!("{}", inp.replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]")),
             PramType::CmdArgs { file_path: f_path, file_text: f_text } => println!("{}: {}", f_path, f_text.replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]")),
             PramType::NoPram => {
@@ -33,18 +34,17 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 1 {
-        let p_type = PramType::NoPram;
-        p_type.custom_print();
+        out_print(PramType::NoPram);
         return;
     }
 
     if args.len() == 2 {
-        let text = input_str();
+        // let text = input_str();
+        let text = inp_string::<String>();
         let serch_word = &args[1];
 
         for caps in get_text(&serch_word, &text) {
-            let p_type = PramType::IoInput { inp_text: caps[0].to_string() };
-            p_type.custom_print();
+            out_print(PramType::IoInput { inp_text: caps[0].to_string() })
         }
     } else if args.len() == 3 {
         let serch_word = &args[1];
@@ -55,10 +55,17 @@ fn main() {
         // println!("{}", target_dir);
         tree(&serch_word, &target, 0);
     } else {
-        let p_type = PramType::NoPram;
-        p_type.custom_print();
+        // let p_type = PramType::NoPram;
+        // p_type.custom_print();
+        out_print(PramType::NoPram);
         return;
     }
+
+    // read_vec2::<String>(10);
+}
+
+fn out_print(p_type: PramType) {
+    p_type.custom_print();
 }
 
 // 再帰的にファイル一覧を表示 --- (*2)
@@ -79,8 +86,9 @@ fn tree(serch_word: &str, target: &path::PathBuf, level: isize) {
         let file_path: &str = &path.into_os_string().into_string().unwrap();
 
         for caps in get_text(&serch_word, &text) {
-            let p_type = PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() };
-            p_type.custom_print();
+            // let p_type = PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() };
+            out_print(PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() });
+            // p_type.custom_print();
         }
     }
 }
@@ -88,14 +96,54 @@ fn tree(serch_word: &str, target: &path::PathBuf, level: isize) {
 fn get_text<'a>(serch_word: &str, text: &'a str) -> std::vec::Vec<regex::Captures<'a>> {
     // 正規表現で抽出する
     let re = Regex::new(&serch_word).unwrap();
-    re.captures_iter(text).collect::<Vec<_>>()
+    re.captures_iter(text).collect::<Vec<regex::Captures<'a>>>()
 }
 
 // 標準入力から文字列を得る --- (*3)
-fn input_str() -> String {
-    let mut s = String::new();
-    io::stdin()
-        .read_line(&mut s)
-        .expect("入力エラー");
-    s.trim_end().to_string()
+// fn input_str() -> String {
+//     let mut s = String::new();
+//     let stdin = io::read_to_string(&mut io::stdin())?;
+//     io::read_to_string(&mut s)
+//         .expect("入力エラー");
+//     s.trim_end().to_string()
+// }
+
+
+#[allow(dead_code)]
+fn read_vec2<T>(n: u32) -> Vec<Vec<T>> 
+    where T: std::str::FromStr
+{
+    let mut v2 = Vec::new();
+    for _ in 0..n {
+        let mut s = String::new();
+        std::io::stdin().read_line(&mut s).ok();
+        let v = s.trim().split_whitespace()
+            .map(|e| e.parse().ok().unwrap()).collect();
+        v2.push(v);
+    }
+    v2
+}
+
+fn inp_string<T>() -> String
+    where T: std::str::FromStr
+{
+    // let mut v2 = Vec::new();
+    // for _ in 0..n {
+    //     let mut s = String::new();
+    //     io::stdin().read_line(&mut s).ok();
+    //     // let v = s.trim();
+    //     v2.push(s);
+    // }
+    // v2.iter().cloned().collect::<String>()
+
+
+
+    let stdin = io::stdin();
+    let mut v2 = Vec::new();
+    for line in stdin.lock().lines() {
+        v2.push(line.unwrap());
+    }
+
+    // v2.iter().cloned().collect::<String>()
+    v2.join("\n")
 }
