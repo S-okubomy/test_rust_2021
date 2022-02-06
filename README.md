@@ -14,6 +14,9 @@
 2. cd testHello1/
 3. cargo run
 
+### binファイル作成
+cargo build --release
+
 ### dockerコマンドで起動する方法
 1. docker-compose up -d --build  
 2. docker-compose exec rust bash  
