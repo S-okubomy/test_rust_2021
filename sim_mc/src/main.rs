@@ -23,7 +23,7 @@ impl Saving {
 
 #[derive(Debug)]
 struct BlanceSim {
-    // saving: Saving,
+    init_money: i32,
 }
 
 /// モンテカルロ・シミュレーション
@@ -39,7 +39,7 @@ impl SimBase for BlanceSim {
         let is_occure: bool = rng.gen_bool(0.8); // 出費が発生するかどうか
         // let is_occure: bool = rng.gen_bool(0.8); // 出費が発生するかどうか
         if is_occure {
-            let mut saving = Saving::new(95);
+            let mut saving = Saving::new(self.init_money);
             let expense = rng.gen_range(90..=99); // 出費の額
             // let expense = rng.gen_range(25..=40); // 出費の額
             saving.update_saving(expense);
@@ -52,7 +52,7 @@ impl SimBase for BlanceSim {
 }
 
 fn main() {
-    let occure_cnt = run(BlanceSim {});
+    let occure_cnt = run(BlanceSim { init_money : 95 });
     println!("確率: {}, 残高zero回数: {}, 実行回数: {}"
         , occure_cnt as f32 /LOOP_MAX as f32, occure_cnt, LOOP_MAX);
 }
