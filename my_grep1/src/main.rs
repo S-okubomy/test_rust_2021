@@ -17,7 +17,7 @@ impl PramType {
             PramType::CmdArgs { file_path: f_path, file_text: f_text } => println!("{}: {}", f_path, f_text.replace("\n", "[\\n]").replace("\r\n", "[\\r\\n]")),
             PramType::NoPram => {
                 println!("パラメータを指定してください！！！");
-                println!("./my_grep 検索文字（正規表現） パス");
+                println!("./my_grep 検索文字（正規表現） ディレクトリパス");
                 println!("(例)  ./my_grep1 \".*(?i)abc[\\s\\S]*?def\" /home/okb/デスクトップ");
                 println!("echo 対象文字 | ./my_grep1 検索文字（正規表現）");
             },
@@ -48,9 +48,9 @@ impl Conf {
     }
 }
 
-// 使用例（正規表現）
-// ./my_grep1 "ギ.*abc[\s\S]*?def" /home/okb/デスクトップ
-// echo "test abcde" | ./my_grep1 ".*bc.*"
+/// 使用例（正規表現）
+/// ./my_grep1 "ギ.*abc[\s\S]*?def" /home/okb/デスクトップ
+/// echo "test abcde" | ./my_grep1 ".*bc.*"
 fn main() {
     // コマンドライン引数を得る --- (*1)
     let args: Vec<String> = env::args().collect();
@@ -94,13 +94,17 @@ fn tree(serch_word: &str, target: &path::PathBuf, level: isize) {
             continue;
         }
 
-        // テキストファイルを読む --- (*3)
-        let text: String = fs::read_to_string(&path).unwrap_or("読み込み失敗".to_string());
-        let file_path: &str = &path.into_os_string().into_string().unwrap();
+        read_and_output_txt(path, serch_word);
+    }
+}
 
-        for caps in get_text(&serch_word, &text) {
-            out_print(PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() });
-        }
+fn read_and_output_txt(path: path::PathBuf, serch_word: &str) {
+    // テキストファイルを読む --- (*3)
+    let text: String = fs::read_to_string(&path).unwrap_or("読み込み失敗".to_string());
+    let file_path: &str = &path.into_os_string().into_string().unwrap();
+
+    for caps in get_text(&serch_word, &text) {
+        out_print(PramType::CmdArgs { file_path: file_path.to_string(), file_text: caps[0].to_string() });
     }
 }
 
