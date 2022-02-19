@@ -6,7 +6,7 @@ use std::time::Instant;
 
 const N_WORKERS: i32 = 4; // スレッド数
 const LOOP_MAX: usize = 100_000; // 最大実行回数 ※スレッド数（N_WORKERS）で割り切れる値を設定する。
-// const LOOP_MAX: usize = 8; // 最大実行回数
+// const LOOP_MAX: usize = 1000; // 最大実行回数
 
 trait SimBase {
     fn init(&mut self);
@@ -78,12 +78,12 @@ impl SimBase for LifeDepositSim {
     fn is_occure(&mut self, rng: &mut rand::prelude::ThreadRng) -> bool {
         const LIFE_PERIOD: i32 = 30; // 30年間
         for _y_cnt in 1..=LIFE_PERIOD {
-            for _m_cnt in 1..12 { // 1年==12ヶ月
-                let income: i32 = rng.gen_range(27..=45);
-                let expense: i32 = rng.gen_range(25..=35);
+            for _m_cnt in 1..=12 { // 1年==12ヶ月
+                let income: i32 = rng.gen_range(26..=45); // 収入の幅
+                let expense: i32 = rng.gen_range(25..=35); // 支出の幅
                 let balance = income - expense;
                 self.deposit_amount += balance; 
-                // println!("経過年:{} {} {} {}", _y_cnt, income, expense, self.deposit_amount);
+                // println!("経過年:{} 月: {} 収入: {} 支出: {} 累積: {}", _y_cnt, _m_cnt, income, expense, self.deposit_amount);
             }
         }
         if self.deposit_amount > 2000 { return true }
