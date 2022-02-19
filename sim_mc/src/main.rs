@@ -2,6 +2,7 @@ use std::{env};
 use rand::Rng;
 use std::thread;
 use std::sync::mpsc;
+use std::time::Instant;
 
 const N_WORKERS: i32 = 4; // スレッド数
 const LOOP_MAX: usize = 100_000; // 最大実行回数 ※スレッド数（N_WORKERS）で割り切れる値を設定する。
@@ -10,7 +11,6 @@ const LOOP_MAX: usize = 100_000; // 最大実行回数 ※スレッド数（N_WO
 trait SimBase {
     fn init(&mut self);
     fn is_occure(&mut self, rng: &mut rand::prelude::ThreadRng) -> bool;
-    fn new(&mut self) -> Self;
 }
 
 #[derive(Debug)]
@@ -44,11 +44,9 @@ struct BlanceSim {
 impl SimBase for BlanceSim {
     fn is_occure(&mut self, rng: &mut rand::prelude::ThreadRng) -> bool {
         let is_occure: bool = rng.gen_bool(0.8); // 出費が発生するかどうか
-        // let is_occure: bool = rng.gen_bool(0.8); // 出費が発生するかどうか
         if is_occure {
             let mut saving = Saving::new(self.init_money);
             let expense = rng.gen_range(90..=99); // 出費の額
-            // let expense = rng.gen_range(25..=40); // 出費の額
             saving.update_saving(expense);
             if saving.balance <= 0 {
                 return true;
@@ -57,7 +55,6 @@ impl SimBase for BlanceSim {
         false
     }
     fn init(&mut self) { }
-    fn new(&mut self) -> Self { todo!() }
 }
 
 /// モンテカルロ・シミュレーション
@@ -92,29 +89,12 @@ impl SimBase for LifeDepositSim {
         if self.deposit_amount > 2000 { return true }
         false
     }
-    fn new(&mut self) -> Self { todo!() }
 }
-
-
-enum SimCode
-{
-    Code1 { model: BlanceSim },
-    Code2 { model: LifeDepositSim },
-}
-
-// impl SimCode {
-//     fn new(&self) -> impl SimBase
-//      {
-//         match &self {
-//             SimCode::Code1 { model } => Box::new(BlanceSim { init_money : 95 }) ,
-//             SimCode::Code2 { model } => LifeDepositSim { init_deposit_amount: 95, deposit_amount: 0 },
-//         }
-//     }
-// }
 
 enum ErrorCode {
     Code1,
     Code2,
+    Code3,
 }
 
 impl ErrorCode {
@@ -126,10 +106,10 @@ impl ErrorCode {
             },
             ErrorCode::Code2 => {
                 println!("シミュレーションNoには数値を入力してください！！！");
-            }
-            _ => {
-                println!("予期せぬエラーです！！！");
-            }
+            },
+            ErrorCode::Code3 => {
+                println!("並列処理有無には、0又は1を入力して下さい。0:無し、1:有り");
+            },
         }
     }
 }
@@ -149,22 +129,20 @@ impl Conf
             Err(ErrorCode::Code1)
         } else {
             let thread_flag: bool = match args[2].parse::<i32>() {
-                Ok(v) if v == 1 => true,
-                Ok(v) if v == 0 => false,
-                _ => false,
-                // Ok(_) => println!("並列処理有無には、0又は1を入力して下さい。0:無し、1:有り"),
-                // Err(_) => {
-                //     println!("並列処理有無には、0又は1を入力して下さい。0:無し、1:有り")
-                // }
-            };
-            let conf: Conf = match args[1].parse::<i32>() {
-                Ok(v) if v == 1 => Conf::Sim1 { thread_flag },
-                Ok(v) if v == 2 => Conf::Sim2 { thread_flag },
-                _ => Conf::Sim2 { thread_flag },
-                // Err(_) => println!("シミュレーションNoには数値を入力してください！！！"),
-            }; 
+                Ok(v) if v == 1 => Ok(true),
+                Ok(v) if v == 0 => Ok(false),
+                Err(_) => Err(ErrorCode::Code3),
+                _ => Err(ErrorCode::Code3),
+            }?; // 変換できなければ即時リターン（"?"をつけるとErrの場合、即時リターンできる）
 
-            Ok(conf)
+            let conf: Conf = match args[1].parse::<i32>() {
+                Ok(v) if v == 1 => Ok(Conf::Sim1 { thread_flag }),
+                Ok(v) if v == 2 => Ok(Conf::Sim2 { thread_flag }),
+                Err(_) => Err(ErrorCode::Code2),
+                _ => Err(ErrorCode::Code2),
+            }?; 
+
+            return Ok(conf);
         }
     }
 
@@ -200,34 +178,12 @@ fn main() {
         err.output();
         std::process::exit(1);
     });
-    // let occure_cnt = run(BlanceSim { init_money : 95 });
-    // let occure_cnt = run(LifeDepositSim {init_deposit_amount: 95, deposit_amount: 0});
+    let start_time = Instant::now();
     run(conf);
+    show_time(start_time);
 }
 
 fn run(conf: Conf) {
-    // let occure_cnt = 0;
-    // match conf {
-    //     Conf::Sim1 { thread_flag } => {
-    //         let blance_sim = BlanceSim { init_money : 95 };
-    //         if thread_flag {
-    //             occure_cnt = thread_process(blance_sim);
-    //         } else {
-    //             one_thread(blance_sim);
-    //         }
-    //     },
-    //     Conf::Sim2 { thread_flag } => if !thread_flag {
-    //         let life_depo = LifeDepositSim {init_deposit_amount: 95, deposit_amount: 0 };
-    //         if thread_flag {
-    //             occure_cnt = thread_process(life_depo);
-    //         } else {
-    //             one_thread(life_depo);
-    //         }
-    //         occure_cnt = one_thread(life_depo);
-    //     }
-
-    // }
-
     let occure_cnt = conf.run();
     println!("確率: {}, 発生回数: {}, 実行回数: {}"
         , occure_cnt as f32 /LOOP_MAX as f32, occure_cnt, LOOP_MAX);
@@ -251,8 +207,6 @@ fn thread_process <T: 'static> (sim_model: T) -> usize
     where T: SimBase + std::marker::Send + Copy
 {
     let thread_loop_max = LOOP_MAX/(N_WORKERS as usize);
-    println!("m: {}", thread_loop_max);
-
     let (tx, rx) = mpsc::channel();
     for _num in 1..=N_WORKERS {
         // ここの tx は for が回るたびにスコープから抜ける => drop する
@@ -281,4 +235,9 @@ fn run_thread <T> (mut sim_model: T, thread_loop_max: usize) -> usize
         }
     }
     occure_cnt
+}
+
+fn show_time(start_time: Instant) {
+    let elapsed = start_time.elapsed();
+    println!("実行時間: {:?}", elapsed);
 }
