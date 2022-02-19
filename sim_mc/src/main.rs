@@ -3,7 +3,8 @@ use rand::Rng;
 const LOOP_MAX: usize = 100_000; // 最大実行回数
 
 trait SimBase {
-    fn is_occure(&self, rng: &mut rand::prelude::ThreadRng) -> bool;
+    fn init(&mut self);
+    fn is_occure(&mut self, rng: &mut rand::prelude::ThreadRng) -> bool;
 }
 
 #[derive(Debug)]
@@ -21,11 +22,6 @@ impl Saving {
     }
 }
 
-#[derive(Debug)]
-struct BlanceSim {
-    init_money: i32,
-}
-
 /// モンテカルロ・シミュレーション
 /// 【例題】
 /// 突然の出費が80%の確率で発生し、その出費は90万円～99万円の間の整数値を取り、
@@ -34,8 +30,13 @@ struct BlanceSim {
 /// 出費が95万円～99万円の時に貯金が底をつく。
 /// 出費があると仮定した場合、95万円～99万円の出費となる確率は50%である。
 /// よって、80%×50%＝40%(0.4)の確率で貯金が底をつく。
+#[derive(Debug)]
+struct BlanceSim {
+    init_money: i32,
+}
+
 impl SimBase for BlanceSim {
-    fn is_occure(&self, rng: &mut rand::prelude::ThreadRng) -> bool {
+    fn is_occure(&mut self, rng: &mut rand::prelude::ThreadRng) -> bool {
         let is_occure: bool = rng.gen_bool(0.8); // 出費が発生するかどうか
         // let is_occure: bool = rng.gen_bool(0.8); // 出費が発生するかどうか
         if is_occure {
@@ -49,20 +50,59 @@ impl SimBase for BlanceSim {
         }
         false
     }
+    fn init(&mut self) { }
 }
 
+/// モンテカルロ・シミュレーション
+/// 【例題】
+/// １ヶ月の収入が25万円〜40万円、支出が20万円〜35万の場合、
+/// 30年間で貯金が2000万円超えとなる確率は何%か？
+/// 【正解】
+/// ---
+#[derive(Debug)]
+struct LifeDepositSim {
+    init_deposit_amount: i32,
+    deposit_amount: i32,
+}
+
+impl SimBase for LifeDepositSim {
+    fn init(&mut self)
+    {
+        self.deposit_amount = self.init_deposit_amount;
+    }
+
+    fn is_occure(&mut self, rng: &mut rand::prelude::ThreadRng) -> bool {
+        const LIFE_PERIOD: i32 = 30; // 30年間
+        for _y_cnt in 1..=LIFE_PERIOD {
+            for _m_cnt in 1..12 { // 1年==12ヶ月
+                let income: i32 = rng.gen_range(27..=45);
+                let expense: i32 = rng.gen_range(25..=35);
+                let balance = income - expense;
+                self.deposit_amount += balance; 
+                // println!("経過年:{} {} {} {}", _y_cnt, income, expense, self.deposit_amount);
+            }
+        }
+        if self.deposit_amount > 2000 { return true }
+        false
+    }
+}
+
+
 fn main() {
-    let occure_cnt = run(BlanceSim { init_money : 95 });
-    println!("確率: {}, 残高zero回数: {}, 実行回数: {}"
+    // let occure_cnt = run(BlanceSim { init_money : 95 });
+    let occure_cnt = run(LifeDepositSim {init_deposit_amount: 95, deposit_amount: 0});
+
+    println!("確率: {}, 発生回数: {}, 実行回数: {}"
         , occure_cnt as f32 /LOOP_MAX as f32, occure_cnt, LOOP_MAX);
 }
 
-fn run <T> (sim_model: T) -> usize
+fn run <T> (mut sim_model: T) -> usize
     where T: SimBase
 {
     let mut rng = rand::thread_rng();
     let mut occure_cnt: usize = 0;
     for _rp_cnt in 1..=LOOP_MAX {
+        sim_model.init();
         if sim_model.is_occure(&mut rng) {
             occure_cnt = occure_cnt + 1;
         }
