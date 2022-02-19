@@ -1,6 +1,10 @@
 use rand::Rng;
+use std::thread;
+use std::sync::mpsc;
 
-const LOOP_MAX: usize = 100_000; // 最大実行回数
+const N_WORKERS: i32 = 4; // スレッド数
+const LOOP_MAX: usize = 100_000; // 最大実行回数 ※スレッド数（N_WORKERS）で割り切れる値を設定する。
+// const LOOP_MAX: usize = 8; // 最大実行回数
 
 trait SimBase {
     fn init(&mut self);
@@ -88,9 +92,11 @@ impl SimBase for LifeDepositSim {
 }
 
 
-fn main() {
+fn main() {    
+
     // let occure_cnt = run(BlanceSim { init_money : 95 });
-    let occure_cnt = run(LifeDepositSim {init_deposit_amount: 95, deposit_amount: 0});
+    // let occure_cnt = run(LifeDepositSim {init_deposit_amount: 95, deposit_amount: 0});
+    let occure_cnt = thread_process();
 
     println!("確率: {}, 発生回数: {}, 実行回数: {}"
         , occure_cnt as f32 /LOOP_MAX as f32, occure_cnt, LOOP_MAX);
@@ -102,6 +108,40 @@ fn run <T> (mut sim_model: T) -> usize
     let mut rng = rand::thread_rng();
     let mut occure_cnt: usize = 0;
     for _rp_cnt in 1..=LOOP_MAX {
+        sim_model.init();
+        if sim_model.is_occure(&mut rng) {
+            occure_cnt = occure_cnt + 1;
+        }
+    }
+    occure_cnt
+}
+
+fn thread_process() -> usize {
+    let thread_loop_max = LOOP_MAX/(N_WORKERS as usize);
+    println!("m: {}", thread_loop_max);
+
+    let (tx, rx) = mpsc::channel();
+    for _num in 1..=N_WORKERS {
+        // ここの tx は for が回るたびにスコープから抜ける => drop する
+        let tx = mpsc::Sender::clone(&tx);
+        thread::spawn(move || {
+            let occure_cnt = run_thread(LifeDepositSim {init_deposit_amount: 95, deposit_amount: 0}, thread_loop_max);
+            tx.send(occure_cnt).unwrap();
+        });
+    }
+
+    drop(tx); // 明示的にdropする必要あり
+
+    let sum_occure_cnt: usize = rx.iter().take(N_WORKERS as usize).map(|val| val).sum();
+    sum_occure_cnt
+}
+
+fn run_thread <T> (mut sim_model: T, thread_loop_max: usize) -> usize
+    where T: SimBase
+{
+    let mut rng = rand::thread_rng();
+    let mut occure_cnt: usize = 0;
+    for _rp_cnt in 1..=thread_loop_max {
         sim_model.init();
         if sim_model.is_occure(&mut rng) {
             occure_cnt = occure_cnt + 1;
