@@ -33,22 +33,68 @@ fn read <T> () -> T
     s.trim().parse().ok().unwrap()
 }
 
-fn main() {
-    let n: u8 = read::<u8>();
-    let mut a_vec: Vec<u32> = read::<String>().split_whitespace().map(|s| s.parse().ok().unwrap()).collect();
+#[allow(dead_code)]
+enum Coin {
+    Coin50(u16),
+    Coin100(u16),
+    Coin500(u16),
+}
 
-    let mut cnt = 0;
-    'outer: loop {
-        for i in 0..(n as usize) {
-            if a_vec[i]%2 != 0 { 
-                break 'outer;
-            }
-            a_vec[i] /= 2;
+impl Coin {
+    fn calc(&self) -> u16 {
+        match *self {
+            Coin::Coin50(v) => 50 * v,
+            Coin::Coin100(v) => 100 * v,
+            Coin::Coin500(v) => 500 * v,
         }
-        cnt += 1;
+    }
+}
+
+// use proconio::{input};
+
+#[allow(non_snake_case)]
+fn main() {
+    let A: u16 = read::<u16>();
+    let B: u16 = read::<u16>();
+    let C: u16 = read::<u16>();
+    let X: u16 = read::<u16>();
+    // input! {
+    //     A: u16,
+    //     B: u16,
+    //     C: u16,
+    //     X: u16
+    // }
+
+    let n = if A < X/500 { A } else { X/500 };
+    // println!("500円枚数最大: {}", n);
+    let mut cnt = 0;
+    for a in 0..=n {
+        let m = if B < (X-Coin::Coin500(a).calc()) / 100 { B } else { (X-Coin::Coin500(a).calc()) / 100 };
+        // println!("100円枚数最大: {}", m);
+        for b in 0..=m {
+            // 残金を50で割った値が、所持してる50円枚数以下なら合計金額ピッタリの選び方になるので？
+            if (X-Coin::Coin500(a).calc() - Coin::Coin100(b).calc()) / 50 <= C { cnt += 1 }
+        } 
     }
 
     println!("{}", cnt);
+
+
+    // let n: u8 = read::<u8>();
+    // let mut a_vec: Vec<u32> = read::<String>().split_whitespace().map(|s| s.parse().ok().unwrap()).collect();
+
+    // let mut cnt = 0;
+    // 'outer: loop {
+    //     for i in 0..(n as usize) {
+    //         if a_vec[i]%2 != 0 { 
+    //             break 'outer;
+    //         }
+    //         a_vec[i] /= 2;
+    //     }
+    //     cnt += 1;
+    // }
+
+    // println!("{}", cnt);
 
 
     // let s_arr = read::<String>();
