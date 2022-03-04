@@ -10,31 +10,62 @@ fn read <T> () -> T
 
 #[allow(non_snake_case)]
 fn main() {
-    let TMP_S: String = read::<String>();
-    let mut S = &TMP_S[..];
-    let pat_arr: [&str; 4] = ["dream", "dreamer", "erase", "eraser"];
-
-    let mut can: bool = true;
-    while S.len() > 0 {
-        // let matched = pat_arr.iter().find(|&p| S.ends_with(p));
-        // if let Some(p) = matched {
-        //     S = &S[..(S.len()-p.len())];
-        // } else {
-        //     can = false;
-        //     break;
-        // }
-
-        match pat_arr.iter().find(|&p| S.ends_with(p)) {
-            Some(p) => S = &S[..(S.len()-p.len())], // ends_withで後ろから比較して、一致してたら前側を残す
-            None => {
-                can = false;
-                break;
-            }
-        }
+    let N: usize = read::<usize>();
+    let mut T_X_Y: Vec<(i32, i32, i32)> = Vec::new();
+    
+    T_X_Y.push((0, 0, 0)); // 初期状態
+    for _i in 0..N {
+        let vec: Vec<i32> = read::<String>().split_whitespace().map(|s| s.trim().parse().ok().unwrap()).collect();
+        T_X_Y.push((vec[0], vec[1], vec[2]));
     }
 
-    println!("{}", if can { "YES" } else { "NO" });
+    if canTravel(N, T_X_Y) {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
 }
+
+#[allow(non_snake_case)]
+fn canTravel(N: usize, T_X_Y: Vec<(i32, i32, i32)>) -> bool {
+    for i in 0..N {
+        let (ti, xi, yi) = T_X_Y[i];
+        let (ti_p1, xi_p1, yi_p1) = T_X_Y[i+1];
+        let dt = ti_p1 - ti;
+        let dist = (xi_p1 - xi).abs() + (yi_p1 - yi).abs();
+        if dt < dist || dt%2 != dist%2 {
+             return false; 
+        }
+    }
+    true
+}
+
+// fn main() {
+//     let TMP_S: String = read::<String>();
+//     let mut S = &TMP_S[..];
+//     let pat_arr: [&str; 4] = ["dream", "dreamer", "erase", "eraser"];
+
+//     let mut can: bool = true;
+//     while S.len() > 0 {
+//         // let matched = pat_arr.iter().find(|&p| S.ends_with(p));
+//         // if let Some(p) = matched {
+//         //     S = &S[..(S.len()-p.len())];
+//         // } else {
+//         //     can = false;
+//         //     break;
+//         // }
+
+//         match pat_arr.iter().find(|&p| S.ends_with(p)) {
+//             Some(p) => S = &S[..(S.len()-p.len())], // ends_withで後ろから比較して、一致してたら前側を残す
+//             None => {
+//                 can = false;
+//                 break;
+//             }
+//         }
+//     }
+
+//     println!("{}", if can { "YES" } else { "NO" });
+// }
 
 // fn main() {
 //     let vec: Vec<u32> = read::<String>().split_whitespace().map(|s| s.trim().parse().ok().unwrap()).collect();
