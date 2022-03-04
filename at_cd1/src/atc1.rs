@@ -105,7 +105,7 @@ mod tests {
         assert_eq!(1+2, 3);
     }
 
-    // TODO 読み取れないので確認
+    // TODO 標準入力が読み取れないので確認 なぜかproconioを使うとうまくいく
     // #[test]
     // fn test1() {
     //     let input = r#"

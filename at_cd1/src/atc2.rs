@@ -1,13 +1,12 @@
 use proconio::input;
 
-
 /// 実行方法
-/// cargo run --bin atc1
+/// cargo run --bin atc2
 /// https://atcoder.jp/contests/abc075/tasks/abc075_b
 fn main() {
     input!{
-        h: u32,
-        w: u32,
+        h: isize,
+        w: isize,
         map_str: [String; h],
     }
 
@@ -20,7 +19,7 @@ fn main() {
     }
 }
 
-fn read_map(h: u32, w: u32, map_str: &[String]) -> Map {
+fn read_map(h: isize, w: isize, map_str: &[String]) -> Map {
     let mut f: Vec<bool> = Vec::with_capacity((h * w) as usize);
     for line in map_str {
         for c in line.trim().chars() {
@@ -40,33 +39,33 @@ fn read_map(h: u32, w: u32, map_str: &[String]) -> Map {
 }
 
 struct Map {
-    h: u32,
-    w: u32,
+    h: isize,
+    w: isize,
     map: Vec<bool>,
 }
 
 impl Map {
-    fn at(&self, x: i32, y: i32) -> Option<bool> {
-        if 0 <= x && x < self.w as i32 && 0 <= y && y < self.h as i32 {
+    fn at(&self, x: isize, y: isize) -> Option<bool> {
+        if 0 <= x && x < self.w && 0 <= y && y < self.h {
             self.map
-                .get(x as usize + y as usize * (self.w as usize))
+                .get((x + y * (self.w)) as usize)
                 .map(|&c| c)
         } else {
             None
         }
     }
-    fn count_neighbour_incl_self(&self, x: u32, y: u32) -> u8 {
+    fn count_neighbour_incl_self(&self, x: isize, y: isize) -> u8 {
         let mut n: u8 = 0;
         for dx in &[-1, 0, 1] {
             for dy in &[-1, 0, 1] {
-                n += self.at(x as i32 + dx, y as i32 + dy).unwrap_or(false) as u8;
+                n += self.at(x + dx, y + dy).unwrap_or(false) as u8;
             }
         }
         n
     }
 
-    fn show_at(&self, x: u32, y: u32) -> String {
-        if self.at(x as i32, y as i32).unwrap_or(false) {
+    fn show_at(&self, x: isize, y: isize) -> String {
+        if self.at(x, y).unwrap_or(false) {
             "#".to_string()
         } else {
             format!("{}", self.count_neighbour_incl_self(x, y))
@@ -76,7 +75,7 @@ impl Map {
 
 
 /// テスト用
-/// cargo build --bin atc1 && cargo test --bin atc1
+/// cargo build --bin atc2 && cargo test --bin atc2
 #[cfg(test)]
 mod tests {
     use cli_test_dir::*;
@@ -99,7 +98,6 @@ mod tests {
         assert_eq!(1+2, 3);
     }
 
-    // TODO 読み取れないので確認
     #[test]
     fn test1() {
         let input = r#"
