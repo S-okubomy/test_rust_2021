@@ -1,5 +1,7 @@
 use proconio::input;
 
+/// 実行方法
+/// cargo run --bin main
 #[allow(non_snake_case)]
 fn main() {
    input!{
@@ -33,7 +35,7 @@ fn can_travel(N: usize, T_X_Y: Vec<(i32, i32, i32)>) -> bool {
 
 
 /// テスト用
-/// cargo build && cargo test
+/// cargo build --bin main && cargo test --bin main
 #[cfg(test)]
 mod tests {
     use cli_test_dir::*;
