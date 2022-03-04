@@ -20,3 +20,7 @@ path = "src/atc1.rs"
 [[bin]]
 name = "atc2"
 path = "src/atc2.rs"
+
+[[bin]]
+name = "atc3"
+path = "src/atc3.rs"
