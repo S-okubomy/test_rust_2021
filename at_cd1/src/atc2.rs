@@ -1,16 +1,17 @@
-fn read <T> () -> T
-    where T: std::str::FromStr
-{
-    let mut s = String::new();
-    std::io::stdin().read_line(&mut s).ok();
-    s.trim().parse().ok().unwrap()
-}
+use proconio::input;
+
 
 /// 実行方法
 /// cargo run --bin atc1
 /// https://atcoder.jp/contests/abc075/tasks/abc075_b
 fn main() {
-    let map = read_map();
+    input!{
+        h: u32,
+        w: u32,
+        map_str: [String; h],
+    }
+
+    let map = read_map(h, w, &map_str);
     for y in 0..map.h {
         for x in 0..map.w {
             print!("{}", map.show_at(x, y));
@@ -19,16 +20,9 @@ fn main() {
     }
 }
 
-fn read_map() -> Map {
-    let vec: Vec<u32> = read::<String>().split_whitespace()
-        .map(|s| s.trim().parse().ok().unwrap()).collect();
-
-    // println!("{:?}", vec);
-    let h = vec[0];
-    let w = vec[1];
+fn read_map(h: u32, w: u32, map_str: &[String]) -> Map {
     let mut f: Vec<bool> = Vec::with_capacity((h * w) as usize);
-    for _y in 1..=h {
-        let line = read::<String>();
+    for line in map_str {
         for c in line.trim().chars() {
             match c {
                 '.' => f.push(false),
@@ -88,7 +82,7 @@ mod tests {
     use cli_test_dir::*;
     use std::process::Output;
 
-    const BIN: &'static str = "./atc1"; // 実行ファイル名
+    const BIN: &'static str = "./atc2"; // 実行ファイル名
 
     fn output(input_str: &str) -> Output {
         let testdir = TestDir::new(BIN, "");
@@ -106,21 +100,66 @@ mod tests {
     }
 
     // TODO 読み取れないので確認
-    // #[test]
-    // fn test1() {
-    //     let input = r#"
-    //         3 5
-    //         .....
-    //         .#.#.
-    //         .....        
-    //     "#;
-    //     let out = output(input);
-    //     let exp = r#"
-    //         11211
-    //         1#2#1
-    //         11211
-    //     "#;
-    //     assert_eq!(out.stdout_str(), exp);
-    //     assert!(out.stderr_str().is_empty());
-    // }
+    #[test]
+    fn test1() {
+        let input = r#"
+            3 5
+            .....
+            .#.#.
+            .....        
+        "#;
+        let out = output(input);
+        let exp: &str = &(r#"
+            11211
+            1#2#1
+            11211
+        "#
+        .trim().split(" ").map(|s| s.replace(" ", "")).collect::<String>() + "\n");
+        assert_eq!(out.stdout_str(), exp );
+        assert!(out.stderr_str().is_empty());
+    }
+
+    #[test]
+    fn test2() {
+        let input = r#"
+            3 5
+            #####
+            #####
+            #####      
+        "#;
+        let out = output(input);
+        let exp: &str = &(r#"
+            #####
+            #####
+            #####
+        "#
+        .trim().split(" ").map(|s| s.replace(" ", "")).collect::<String>() + "\n");
+        assert_eq!(out.stdout_str(), exp );
+        assert!(out.stderr_str().is_empty());
+    }
+
+    #[test]
+    fn test3() {
+        let input = r#"
+            6 6
+            #####.
+            #.#.##
+            ####.#
+            .#..#.
+            #.##..
+            #.#...
+        "#;
+        let out = output(input);
+        let exp: &str = &(r#"
+            #####3
+            #8#7##
+            ####5#
+            4#65#2
+            #5##21
+            #4#310   
+        "#
+        .trim().split(" ").map(|s| s.replace(" ", "")).collect::<String>() + "\n");
+        assert_eq!(out.stdout_str(), exp );
+        assert!(out.stderr_str().is_empty());
+    }
 }

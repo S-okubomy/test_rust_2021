@@ -2,6 +2,7 @@ use proconio::input;
 
 /// 実行方法
 /// cargo run --bin main
+/// https://atcoder.jp/contests/abs/tasks/arc089_a
 #[allow(non_snake_case)]
 fn main() {
    input!{
