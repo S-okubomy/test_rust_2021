@@ -1,8 +1,8 @@
-use proconio::input;
-
+use proconio::{ input, fastout };
 /// 実行方法
 /// cargo run --bin atc2
 /// https://atcoder.jp/contests/abc075/tasks/abc075_b
+#[fastout]
 fn main() {
     input!{
         h: isize,

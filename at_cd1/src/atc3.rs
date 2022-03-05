@@ -1,14 +1,33 @@
 /// 実行方法
 /// cargo run --bin atc3
 /// https://atcoder.jp/contests/math-and-algorithm
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_g
 
-use proconio::input;
+use proconio::{ input, fastout };
 
+#[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
-        n: u8,
+        N: isize,
+        X: isize,
+        Y: isize,
     }
-    println!("{}", n + 5);
+    // XとYの倍数の合計個数から被ってる個数（最小公倍数）を引く
+    println!("{}", N/X + N/Y - N/lcm(X, Y));
+}
+
+// 最小公倍数を求める
+fn lcm(a: isize, b: isize) -> isize {
+    (a * b) / gcd(a, b)
+}
+
+// 最大公約数
+fn gcd(a: isize, b: isize) -> isize {
+    if b == 0 {
+        return a;
+    }
+    gcd(b, a%b)
 }
 
 /// テスト用
