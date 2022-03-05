@@ -37,9 +37,11 @@ fn brute_force_2() {
         if A[i] <= S {
             // （例）2 5 9の場合、dp[1][5]はtrue
             dp[i][A[i]] = true;
+            // println!("trueのindex dp[{}][{}]", i, A[i]);
         }
 
         for j in 1..=S {
+            // 既にチェックしてたら、continue
             // （例）2 5 9の場合、dp[1][0]はfalse → not continue
             if dp[i][j] {
                 continue;
@@ -55,9 +57,18 @@ fn brute_force_2() {
             if j >= A[i] && dp[i-1][j-A[i]] {
                 // （例）2 5 9の場合、dp[1][7]にtrueを設定 
                 dp[i][j] = true;
+                // println!("trueのindex(和) dp[{}][{}]", i, j);
             }
         }
     }
+
+    // for i in 0..N {
+    //     for j in 0..=S {
+    //         if dp[i][j] {
+    //             println!("trueのindex dp[{}][{}]", i, j);
+    //         }
+    //     }
+    // }
 
     if dp[N-1][S] {
         println!("Yes");
@@ -69,7 +80,7 @@ fn brute_force_2() {
 //   0 1 2 3 4 5 6 7 8 9 10 11
 // 0     t
 // 1     t     t   t
-// 2     t     t   t   t
+// 2     t     t   t   t    t
 // 3
 }
 
