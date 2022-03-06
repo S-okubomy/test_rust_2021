@@ -1,7 +1,6 @@
 /// 実行方法
 /// cargo run --bin atc4
 /// https://atcoder.jp/contests/math-and-algorithm
-/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_h
 
 use proconio::{ input, fastout };
 
@@ -11,7 +10,7 @@ fn main() {
     brute_force_2();
 }
 
-// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_i
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_i
 #[allow(non_snake_case)]
 #[fastout]
 fn brute_force_2() {
@@ -51,7 +50,7 @@ fn brute_force_2() {
             // （例）2 5 9の場合、dp[1][0] = dp[0][0] = false
             dp[i][j] = dp[i-1][j];
 
-            // 選ぶ場合: j-A[i]
+            // i番目のカード選ぶ場合:
             // （例）2 5 9の場合、dp[i-1][j-A[i]]] = dp[1-1][5-A[1]] = dp[0][0] は、falseなので対象外
             // （例）2 5 9の場合、dp[i-1][j-A[i]]] = dp[1-1][7-A[1]] = dp[0][2] は、trueなので対象 
             if j >= A[i] && dp[i-1][j-A[i]] {
@@ -70,11 +69,7 @@ fn brute_force_2() {
     //     }
     // }
 
-    if dp[N-1][S] {
-        println!("Yes");
-    } else {
-        println!("No");
-    }
+    println!("{}", yes_or_no(dp[N-1][S]));
 
 // 縦軸i、横軸j
 //   0 1 2 3 4 5 6 7 8 9 10 11
@@ -85,7 +80,13 @@ fn brute_force_2() {
 }
 
 
-
+fn yes_or_no(b: bool) -> String {
+    if b {
+        String::from("Yes")
+    } else {
+        String::from("No")
+    }
+}
 
 
 /// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_h
