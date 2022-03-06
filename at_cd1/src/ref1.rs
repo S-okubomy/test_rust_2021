@@ -43,3 +43,42 @@ fn yesno(b: bool) -> String {
         String::from("No")
     }
 }
+
+
+
+// use proconio::{fastout, input};
+ 
+// #[fastout]
+// fn main() {
+//     input! {
+//         n: usize
+//     }
+ 
+//     println!("{}", factorial(n));
+// }
+ 
+// fn factorial(n: usize) -> usize {
+//     if n != 0 {
+//         factorial(n - 1) * n
+//     } else {
+//         1
+//     }
+// }
+
+
+
+// fn main() {
+  
+//     proconio::input! {
+//       n: u64
+//     }
+    
+//     println!("{}", factorial(n));
+//   }
+   
+//   fn factorial(a: u64) -> u64 {
+//     match a {
+//       0 | 1 => 1,
+//       _ => a * factorial(a - 1)
+//     }
+//   }
