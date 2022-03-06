@@ -1,5 +1,5 @@
 /// 実行方法
-/// cargo run --bin atc4
+/// cargo run --bin atc5
 /// https://atcoder.jp/contests/math-and-algorithm
 
 use proconio::{ input, fastout };
