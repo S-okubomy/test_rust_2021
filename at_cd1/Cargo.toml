@@ -39,5 +39,10 @@ name = "atc6"
 path = "src/atc6.rs"
 
 [[bin]]
+name = "atc7"
+path = "src/atc7.rs"
+
+
+[[bin]]
 name = "ref1"
 path = "src/ref1.rs"
