@@ -8,6 +8,7 @@ fn main() {
     choose_card2_by_dp();
 }
 
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_t
 #[allow(non_snake_case)]
 fn choose_card2_by_dp() {
     input! {
@@ -50,6 +51,8 @@ fn get_cnt_by_dp(A: Vec<usize>, N: usize) -> usize {
     // }
 
     // dp[SUM_MAX][SELECT_CNT]
+
+// TODO rev()する理由確認
 
     for n in 0..N {
         for i in (0..SELECT_CNT).rev() {
