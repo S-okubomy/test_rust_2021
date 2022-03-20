@@ -5,7 +5,7 @@
 use proconio::{ input, fastout };
 
 fn main() {
-    choose_card2_by_dp();
+    choose_card2_by_bit();
 }
 
 /// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_t
@@ -79,19 +79,20 @@ fn get_cnt_by_dp(A: Vec<usize>, N: usize) -> usize {
 #[fastout]
 fn choose_card2_by_bit() {
     input! {
-        N: u8,
-        A: [u16; N],
+        N: u128,
+        A: [u128; N],
     }
     println!("{}", get_cnt_by_bit(A, N));
 }
 
 /// Nが大きくなるとbit足りないのでだめ
 #[allow(non_snake_case)]
-fn get_cnt_by_bit(A: Vec<u16>, N: u8) -> u32 {
-    const SUM_MAX: u16 = 1000;
+fn get_cnt_by_bit(A: Vec<u128>, N: u128) -> u128 {
+    const SUM_MAX: u128 = 1000;
     let mut cnt = 0;
     for i in 0..(1 << N) {
-        if (i as isize).count_ones() != 5 { continue; }
+        // println!("{:16b}", i);
+        if (i as u128).count_ones() != 5 { continue; }
         let mut sum = 0;
         for j in 0..(N as usize) {
             if i & (1 << j) != 0 {
