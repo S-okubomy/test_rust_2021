@@ -119,27 +119,6 @@ fn is_intersect(AB_AC: VectorCouple, AB_AD: VectorCouple, CD_CA: VectorCouple, C
             false
         }
 
-        // let mut is_AB = false; // 線分ABが点C, Dを分けるか
-        // if AB_AC.cross >= 0 && AB_AD.cross <= 0 {
-        //     is_AB = true; // 互いに向きが反対なら分ける
-        // }
-        // if AB_AC.cross <= 0 && AB_AD.cross >= 0 {
-        //     is_AB = true;
-        // }
-
-        // let mut is_CD = false; // 線分CDが点A, Bを分けるか
-        // if CD_CA.cross >= 0 && CD_CB.cross <= 0 {
-        //     is_CD = true;
-        // }
-        // if CD_CA.cross <= 0 && CD_CB.cross >= 0 {
-        //     is_CD = true;
-        // }
-
-        // if is_AB && is_CD {
-        //     true
-        // } else {
-        //     false
-        // }
     }
 }
 
@@ -149,78 +128,4 @@ fn yes_or_no(b: bool) -> String {
     } else {
         String::from("No")
     }
-}
-
-
-
-/// https://atcoder.jp/contests/math-and-algorithm/tasks/abc168_c
-#[allow(dead_code)]
-#[allow(non_snake_case)]
-#[fastout]
-fn colon() {
-    input! {
-        A: f64,
-        B: f64,
-        H: f64,
-        M: f64,
-    }
-
-    let H_angle = 30.0 * H + 0.5 * M;
-    let M_angle = 6.0 * M;
-    let Hx = A * (H_angle * PI / 180.0).cos();
-    let Hy = A * (H_angle * PI / 180.0).sin();
-    let Mx = B * (M_angle * PI / 180.0).cos();
-    let My = B * (M_angle * PI / 180.0).sin();
-
-    let dist: f64 = ((Hx - Mx).powf(2.0) + (Hy - My).powf(2.0)).sqrt();
-    println!("{}", dist);
-}
-
-/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_ag
-#[allow(dead_code)]
-#[fastout]
-fn two_circles() {
-    input! {
-        c1: (f64, f64, f64),
-        c2: (f64, f64, f64), 
-    }
-    let (x1, y1, r1) = c1;
-    let (x2, y2, r2) = c2;
-    let dist: f64 = ((x1 - x2).powf(2.0) + (y1 - y2).powf(2.0)).sqrt();
-    
-    if dist < (r1 - r2).abs() {
-        println!("1");
-    } else if dist == (r1 - r2).abs() {
-        println!("2");
-    } else if dist < r1 + r2 {
-        println!("3");
-    } else if dist == r1 + r2 {
-        println!("4");
-    } else {
-        println!("5");
-    }
-}
-
-
-/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_af
-#[allow(dead_code)]
-#[allow(non_snake_case)]
-#[fastout]
-fn nearest_points() {
-    input! {
-        N: usize,
-        mut points: [(f64, f64); N],
-    }
-    points.insert(0, (0.0, 0.0));
-
-    let mut ans = INF;
-    for i in 1..=N {
-        let (x1, y1) = points[i];
-        for j in i+1..=N {
-            let (x2, y2) = points[j];
-            let dist = ((x1 - x2).powf(2.0) + (y1 - y2).powf(2.0)).sqrt();
-            ans = ans.min(dist);
-        }
-    }
-    println!("{}", ans);
 }
