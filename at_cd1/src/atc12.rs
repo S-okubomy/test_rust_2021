@@ -1,12 +1,10 @@
 use proconio:: { input, fastout };
 
-const INF: f64 = 1.7976931348623157e+308_f64;
-const PI: f64 = std::f64::consts::PI;
-
 fn main() {
     intersection();
 }
 
+#[derive(Clone, Copy)]
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd)]
 struct Point {
     x: i64,
@@ -18,18 +16,15 @@ struct Vector {
     vy: i64,
 }
 
-struct VectorCouple<'a> {
-    v1: Vector,
-    v2: Vector,
-    cross: i64,
+struct VectorCouple {
     is_clockwise: bool,  // 時計周りかどうか（ここでは外積が負の場合、時計周りとする）
     is_counter_clockwise: bool, // 反時計周りかどうか
     is_straight_line: bool, // 3つの点が一直線上に並んでいるかどうか
-    left_right_point: (&'a Point, &'a Point), // 左端と右端のPoint
+    left_right_point: (Point, Point), // 左端と右端のPoint
 }
 
-impl<'a> VectorCouple<'a> {
-    fn new(base_point: &'a Point, p1: &'a Point, p2: &Point) -> Self {
+impl VectorCouple {
+    fn new(base_point: Point, p1: Point, p2: Point) -> Self {
         let v1 = Vector { vx: p1.x - base_point.x, vy: p1.y - base_point.y };
         let v2 = Vector { vx: p2.x - base_point.x, vy: p2.y - base_point.y };
         let cross: i64 = (v1.vx * v2.vy) - (v1.vy * v2.vx);
@@ -38,7 +33,7 @@ impl<'a> VectorCouple<'a> {
         let is_straight_line = if cross == 0 { true } else { false };
         let left_right_point = if base_point <= p1 { (base_point, p1) } else { (p1, base_point) };
 
-        VectorCouple { v1, v2, cross, is_clockwise, is_counter_clockwise, is_straight_line, left_right_point }
+        VectorCouple { is_clockwise, is_counter_clockwise, is_straight_line, left_right_point }
     }
 }
 
@@ -60,33 +55,25 @@ fn intersection() {
         D: (i64, i64),
     }
 
-    let A_Point = Point{ x: A.0, y: A.1 };
+    let (AB_AC, AB_AD, CD_CA, CD_CB) = setup_inst(A, B, C, D);
+    println!("{}", yes_or_no(is_intersect(AB_AC, AB_AD, CD_CA, CD_CB)));
+}
+
+#[allow(non_snake_case)]
+fn setup_inst(A: (i64, i64), B: (i64, i64), C: (i64, i64), D: (i64, i64)) 
+        -> (VectorCouple, VectorCouple, VectorCouple, VectorCouple){
+    let A_Point: Point = Point{ x: A.0, y: A.1 };
     let B_Point = Point{ x: B.0, y: B.1 };
     let C_Point = Point{ x: C.0, y: C.1 };
     let D_Point = Point{ x: D.0, y: D.1 };
 
-    let AB_AC = VectorCouple::new(&A_Point, &B_Point, &C_Point);
-    let AB_AD = VectorCouple::new(&A_Point, &B_Point, &D_Point);
-    let CD_CA = VectorCouple::new(&C_Point, &D_Point, &A_Point);
-    let CD_CB = VectorCouple::new(&C_Point, &D_Point, &B_Point);
+    let AB_AC = VectorCouple::new(A_Point, B_Point, C_Point);
+    let AB_AD = VectorCouple::new(A_Point, B_Point, D_Point);
+    let CD_CA = VectorCouple::new(C_Point, D_Point, A_Point);
+    let CD_CB = VectorCouple::new(C_Point, D_Point, B_Point);
 
-    println!("{}", yes_or_no(is_intersect(AB_AC, AB_AD, CD_CA, CD_CB)));
+    (AB_AC, AB_AD, CD_CA, CD_CB)
 }
-
-// fn setup_inst<'a>(A: (i64, i64), B: (i64, i64), C: (i64, i64), D: (i64, i64)) 
-//         -> (VectorCouple<'a>, VectorCouple<'a>, VectorCouple<'a>, VectorCouple<'a>){
-//     let A_Point: Point = Point{ x: A.0, y: A.1 };
-//     let B_Point = Point{ x: B.0, y: B.1 };
-//     let C_Point = Point{ x: C.0, y: C.1 };
-//     let D_Point = Point{ x: D.0, y: D.1 };
-
-//     let AB_AC = VectorCouple::new(&A_Point, &B_Point, &C_Point);
-//     let AB_AD = VectorCouple::new(&A_Point, &B_Point, &D_Point);
-//     let CD_CA = VectorCouple::new(&C_Point, &D_Point, &A_Point);
-//     let CD_CB = VectorCouple::new(&C_Point, &D_Point, &B_Point);
-
-//     (AB_AC, AB_AD, CD_CA, CD_CB)
-// }
 
 #[allow(non_snake_case)]
 fn is_intersect(AB_AC: VectorCouple, AB_AD: VectorCouple, CD_CA: VectorCouple, CD_CB: VectorCouple) -> bool {
