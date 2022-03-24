@@ -2,12 +2,73 @@ use proconio::{ input, fastout };
 
 
 fn main() {
-    travel();
+    convi_store2();
+}
+
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_al
+fn convi_store2() {
+    println!("TODO")
+}
+
+#[allow(dead_code)]
+#[allow(non_snake_case)]
+#[fastout]
+fn double() {
+    input! {
+        S: String,
+    }
+
+    let res = S.trim().parse::<i32>();
+    let ans: String = match res {
+        Ok(v) => (2 * v).to_string(),
+        Err(_) => "error".to_owned(),
+    };
+    println!("{}", ans);
+
+    // let res: Result<i32, &'static str> = match S.trim().parse::<i32>() {
+    //     Ok(v) => Ok(2 * v),
+    //     Err(_) => Err("error"),
+    // };
+    // match res {
+    //     Ok(v) => println!("{}", v),
+    //     Err(e) => println!("{}", e),
+    // };
 }
 
 /// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_ak
+#[allow(dead_code)]
+#[allow(non_snake_case)]
+#[fastout]
 fn travel() {
-    println!("TODO");
+    input! {
+        N: usize,
+        mut A: [usize; N-1],
+        M: usize,
+        mut B: [usize; M],
+    }
+
+    A.insert(0, 0);
+    B.insert(0, 0);
+
+    // 累積和
+    let mut S: Vec<isize> = vec![0; N+1];
+    S[1] = 0;
+    for i in 2..=N {
+        S[i] = S[i-1] + A[i-1] as isize;
+    }
+
+    let mut ans: isize = 0;
+    for i in 1..=M-1 {
+        let (prev_st, next_st) = (B[i], B[i+1]);
+        ans += (S[next_st] - S[prev_st]).abs();
+        // if next_st > prev_st {
+        //     ans += S[next_st] - S[prev_st];
+        // } else {
+        //     ans += S[prev_st] - S[next_st];
+        // }
+    }
+
+    println!("{}", ans);
 }
 
 /// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_aj
