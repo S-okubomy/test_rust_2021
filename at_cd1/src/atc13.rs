@@ -6,8 +6,35 @@ fn main() {
 }
 
 /// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_al
+#[allow(non_snake_case)]
+#[fastout]
 fn convi_store2() {
-    println!("TODO")
+    input! {
+        T: usize,
+        N: usize,
+        mut LR: [(usize, usize); N],
+    }
+    LR.insert(0, (0, 0));
+
+    // 階差
+    let mut B: Vec<isize> = vec![0; T+1];
+    B[0] = 0;
+    for i in 1..=N {
+        let (L, R) = LR[i];
+        B[L] += 1;
+        B[R] -= 1; // R-1までは居るけど、Rになると居ない 
+    }
+
+    // 累積和
+    let mut S: Vec<isize> = vec![0; T];
+    S[0] = B[0];
+    for i in 1..=T-1 {
+        S[i] = S[i-1] + B[i];
+    }
+
+    for i in 0..=T-1 {
+        println!("{}", S[i]);
+    }
 }
 
 #[allow(dead_code)]
