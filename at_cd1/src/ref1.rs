@@ -1,9 +1,46 @@
+use proconio::{ input, fastout };
+
+#[allow(non_snake_case)]
+#[fastout]
 fn main() {
-    let numbers = read_numbers();
-    if let [n] = numbers[..] {
-        solve(n);
+    input! {
+        N: usize, M: usize,
+        A: [usize; N],
+        B: [usize; M],
     }
+
+    let mut have_past: Vec<bool> = vec![true; N];
+
+    let mut ans = "Yes";
+    for b in B {
+        let mut is_ok = false;
+        for (index, a) in A.iter().enumerate() {
+            if have_past[index] && b == *a {
+                have_past[index] = false;
+                is_ok = true;
+                break;
+            }
+        }
+        if !is_ok {
+            ans = "No";
+            break;
+        }
+    }
+    println!("{}", ans);
 }
+
+
+
+
+
+
+
+// fn main() {
+//     let numbers = read_numbers();
+//     if let [n] = numbers[..] {
+//         solve(n);
+//     }
+// }
 
 fn solve(n: u64) {
     let f = fac(n);

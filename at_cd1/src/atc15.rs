@@ -2,7 +2,82 @@ use proconio::{ input, fastout };
 use std::collections::VecDeque;
 
 fn main() {
-    is_it_connected_stack();
+    breadth_first_search();
+}
+
+
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/abc007_3
+fn breadth_first_search() {
+    // TODO
+    println!("TODO");
+}
+
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/typical90_bz
+#[allow(dead_code)]
+#[allow(non_snake_case)]
+#[fastout]
+fn easy_graph_problem() {
+    input! {
+        N: usize, M: usize,
+        AB: [(usize, usize); M],
+    }
+    let mut neighber_nodes: Vec<Vec<usize>> = vec![vec![]; N+1];
+    for ab in AB {
+        let (a, b) = ab;
+        neighber_nodes[a].push(b);
+        neighber_nodes[b].push(a);
+    }
+
+    let mut ans_cnt = 0;
+    for i in 1..=N {
+        let neighber_num = neighber_nodes[i].len();
+        let mut tmp_cnt = 0;
+        for j in 0..neighber_num {
+            if i > neighber_nodes[i][j] {
+                tmp_cnt += 1;
+            }
+        }
+        if tmp_cnt == 1 {
+            ans_cnt += 1;
+        }
+    }
+    println!("{}", ans_cnt);
+}
+
+/// https://atcoder.jp/contests/math-and-algorithm/tasks/typical90_bz
+#[allow(dead_code)]
+#[allow(non_snake_case)]
+#[fastout]
+fn shortest_path_problem() {
+    input! {
+        N: usize, M: usize,
+        AB: [(usize, usize); M],
+    }
+    let mut neighber_nodes: Vec<Vec<usize>> = vec![vec![]; N+1];
+    for ab in AB {
+        let (a, b) = ab;
+       neighber_nodes[a].push(b);
+       neighber_nodes[b].push(a); 
+    }
+
+    let mut deque: VecDeque<usize> = VecDeque::new();
+    deque.push_back(1); // Que末尾に追加
+    let mut dist: Vec<isize> = vec![-1; N+1];
+    dist[1] = 0;
+    while deque.len() > 0 {
+        // let pos = deque[0];
+        let pos: usize = deque.pop_front().unwrap(); // Que先頭調べる&先頭取り出し
+        for neighber_n in &neighber_nodes[pos] {
+            if dist[*neighber_n] == -1 {
+                dist[*neighber_n] = dist[pos] + 1;
+                deque.push_back(*neighber_n); // Que末尾に追加
+            }
+        }
+    }
+
+    for i in 1..=N {
+        println!("{}", dist[i]);
+    }
 }
 
 /// https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_am
