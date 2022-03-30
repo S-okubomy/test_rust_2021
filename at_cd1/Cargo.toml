@@ -82,6 +82,11 @@ path = "src/atc16.rs"
 
 
 
+
+[[bin]]
+name = "atc_o1"
+path = "src/atc_o1.rs"
+
 [[bin]]
 name = "ref1"
 path = "src/ref1.rs"
