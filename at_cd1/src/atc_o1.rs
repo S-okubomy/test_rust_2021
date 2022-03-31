@@ -16,7 +16,7 @@ fn go_straight_turn2() {
         T: String,
     }
     let act_vec: Vec<char> = T.chars().collect::<Vec<char>>();
-    let mut dir_no: usize = 1;
+    let mut dir_no: usize = 1; // 東からスタート
     let dirs: Vec<(isize, isize)> = vec![(0, 1), (1, 0), (0, -1), (-1, 0)]; // 北、東、南、西の順
     let mut xy: (isize, isize) = (0, 0);
     for act in act_vec {
