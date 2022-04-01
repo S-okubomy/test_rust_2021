@@ -1,9 +1,109 @@
 use proconio:: { input, fastout };
-use std::collections::HashMap;
+use std::collections::{ HashMap, HashSet };
+
 
 fn main() {
-    go_straight_turn2(); 
+    collision2(); 
 }
+
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn collision2() {
+    input! {
+        N: usize,
+        XY: [(isize, isize); N],
+        S: String,
+    }
+
+    // y座標の一覧（重複無し）
+    let y_set: HashSet<isize> = XY.iter().map(|(_x, y)| { *y } ).collect::<HashSet<isize>>();
+    let dir_vec: Vec<String> = S.chars().map(|c| { c.to_string() }).collect::<Vec<String>>();
+
+    let mut y_dir_R: HashMap<isize, Vec<isize>> = HashMap::new(); // 右向きの同一y座標のx
+    let mut y_dir_L = HashMap::new(); // 左向きの同一y座標のx
+
+    for (index, dir) in dir_vec.iter().enumerate() {
+        let (x, y) = XY[index];
+        match dir.as_str() {
+            "R" => {
+                y_dir_R.entry(y).or_insert(vec![]).push(x);
+            },
+            "L" => {
+                y_dir_L.entry(y).or_insert(vec![]).push(x);
+            },
+            _ => (),
+        }
+    }
+
+    let mut ans: &str = "No";
+    for y in y_set {
+        // 左向きと右向きの人が同じyにいたら確認する
+        if y_dir_R.contains_key(&y) && y_dir_L.contains_key(&y) {
+            let min_dir_R: isize = *y_dir_R[&y].iter().min().unwrap();
+            let max_dir_L: isize = *y_dir_L[&y].iter().max().unwrap();
+            if min_dir_R < max_dir_L {
+                ans = "Yes";
+                break;
+            }
+        }
+    }
+
+    println!("{}", ans);
+}
+
+
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn hit_and_blow() {
+    input! {
+        N: usize,
+        A: [usize; N],
+        B: [usize; N],
+    }
+
+    // A にも B にも含まれ、その位置も一致している整数の個数
+    let mut ans_cnt1: usize = 0;
+    for i in 0..N {
+        if A[i] == B[i] {
+            ans_cnt1 += 1;
+        }
+    }
+
+    // A にも B にも含まれるが、その位置は異なる整数の個数
+    let mut ans_cnt2 = 0;
+    for i in 0..N {
+        for j in 0..N {
+            if (i != j) && (A[i] == B[j]) {
+                ans_cnt2 += 1;
+            }
+        }
+    }
+    println!("{}", ans_cnt1);
+    println!("{}", ans_cnt2);
+}
+
+/// https://atcoder.jp/contests/abc243/tasks/abc243_a
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn shampoo() {
+    input! {
+        V: isize, A: isize, B: isize, C: isize,
+    }
+
+    let v_mod: isize = V % (A + B + C);
+
+    if v_mod < A {
+        println!("F");
+    } else if v_mod < A + B {
+        println!("M");
+    } else {
+        println!("T");
+    }
+}
+
 
 
 /// https://atcoder.jp/contests/abc244/tasks/abc244_b
