@@ -3,7 +3,80 @@ use std::collections::{ HashMap, HashSet };
 
 
 fn main() {
-    collision2(); 
+    gal_password(); 
+}
+
+
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn gal_password() {
+    input! {
+        N: usize,
+    }
+    const MOD: isize = 998244353;
+
+    // dp[i][j]: 上からi桁目まで決めて、i桁目の数字がjである組み合わせ数（を 998244353998244353 で割った余り）
+    let mut dp: Vec<Vec<isize>> = vec![vec![0; 11]; N+1];
+
+    // 上から1桁目は1個
+    for j in 1..=9 {
+        dp[1][j] = 1 % MOD;
+    }
+
+    for i in 2..=N {
+        for j in 1..=9 {
+            dp[i][j] = (dp[i-1][j-1] + dp[i-1][j] + dp[i-1][j+1]) % MOD;
+        }
+    }
+
+    let ans: isize = dp[N].iter().sum::<isize>() % MOD;
+    println!("{}", ans);
+
+    // println!("{:2?}", dp);
+    // N = 4桁の場合
+    //        数字 1   2   3   4   5   5   7   8   9
+    // 1桁目 [ 0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0]
+    // 2桁目 [ 0,  2,  3,  3,  3,  3,  3,  3,  3,  2,  0]
+    // 3桁目 [ 0,  5,  8,  9,  9,  9,  9,  9,  8,  5,  0]
+    // 4桁目 [ 0, 13, 22, 26, 27, 27, 27, 26, 22, 13,  0]
+}
+
+
+/// https://atcoder.jp/contests/abc242/submissions/me
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn minimize_ordering() {
+    input! {
+        S: String,
+    }
+    let mut ans_tmp: Vec<String> = S.chars().map(|c| { c.to_string() }).collect::<Vec<String>>();
+    ans_tmp.sort_by(|a, b| { a.cmp(b) });
+    let ans = ans_tmp.join("");
+    println!("{}", ans);
+}
+
+
+/// https://atcoder.jp/contests/abc242/tasks/abc242_a
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn t_shirt() {
+    input! {
+        A: f64, B: f64, C: f64, X: f64,
+    }
+
+    let ans: f64;
+    if X <= A {
+        ans = 1.0;
+    } else if A < X && X <= B {
+        ans = C / (B - A);
+    } else {
+        ans = 0.0;
+    }
+
+    println!("{}", ans);
 }
 
 #[allow(non_snake_case)]
@@ -93,11 +166,11 @@ fn shampoo() {
         V: isize, A: isize, B: isize, C: isize,
     }
 
-    let v_mod: isize = V % (A + B + C);
+    let v_MOD: isize = V % (A + B + C);
 
-    if v_mod < A {
+    if v_MOD < A {
         println!("F");
-    } else if v_mod < A + B {
+    } else if v_MOD < A + B {
         println!("M");
     } else {
         println!("T");
@@ -304,15 +377,15 @@ fn NG_b_mex2() {
         *cnt +=1;
     }
 
-    let mut tmp_vec: Vec<_> = hash_map.iter().collect();
-    tmp_vec.sort_by(|a, b| { (a.0).cmp(b.0) } ); // keyの値の小さい順
+    let mut ans_tmp_vec: Vec<_> = hash_map.iter().collect();
+    ans_tmp_vec.sort_by(|a, b| { (a.0).cmp(b.0) } ); // keyの値の小さい順
 
     // println!("{:?}", hash_map);
-    // println!("{:?}", tmp_vec);
+    // println!("{:?}", ans_tmp_vec);
 
     let mut ans = 0;
     for i in 0..=2000 {
-        let (key, _) = tmp_vec[i];
+        let (key, _) = ans_tmp_vec[i];
         if i != *key {
             ans = i;
             break;
