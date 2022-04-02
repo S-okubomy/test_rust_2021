@@ -7,6 +7,7 @@ fn main() {
 }
 
 
+/// https://atcoder.jp/contests/abc242/tasks/abc242_c
 #[allow(non_snake_case)]
 #[fastout]
 #[allow(dead_code)]
