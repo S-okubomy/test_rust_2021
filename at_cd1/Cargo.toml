@@ -92,5 +92,10 @@ name = "atc_o2"
 path = "src/atc_o2.rs"
 
 [[bin]]
+name = "atc_o3"
+path = "src/atc_o3.rs"
+
+
+[[bin]]
 name = "ref1"
 path = "src/ref1.rs"
