@@ -1,5 +1,6 @@
 use proconio::{ input, fastout };
 use std::collections::{ HashSet };
+use std::cmp::{ min, max };
 
 fn yes_or_no(b: bool) -> String {
     if b {
@@ -10,12 +11,61 @@ fn yes_or_no(b: bool) -> String {
 }
 
 fn main() {
-    exponential_or_quadratic();
+    digitnum();
 }
 
 /// https://qiita.com/sano192/items/abea29fc42030300f379
-fn exponential_or_quadratic() {
+fn digitnum() {
     println!("TODO");
+}
+
+/// https://atcoder.jp/contests/abc238/tasks/abc238_b
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn pizza() {
+    input! {
+        N: usize,
+        A: [usize; N],
+    }
+
+    let mut angle_vec: Vec<usize> = Vec::new();
+
+    // はじめの0度
+    angle_vec.push(0);
+    let mut angle: usize = 0;
+    for i in 0..N {
+        angle += A[i];
+        angle_vec.push(angle % 360);
+    }
+
+    // 360度追加
+    angle_vec.push(360);
+
+    // 360度超えるかもしれないので、小さい順に並び替え
+    angle_vec.sort_by(|a, b| { a.cmp(b) } );
+
+    let mut ans = 0;
+    for i in 1..=N+1 {
+        ans = max(ans, angle_vec[i] - angle_vec[i-1]);
+    }
+    println!("{}", ans);
+}
+
+/// https://qiita.com/sano192/items/abea29fc42030300f379
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn exponential_or_quadratic() {
+    input! {
+        n: usize,
+    }
+
+    if 2 <= n && n <= 4 {
+        println!("No");
+    } else {
+        println!("Yes");
+    }
 }
 
 
