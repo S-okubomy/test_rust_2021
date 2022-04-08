@@ -11,13 +11,155 @@ fn yes_or_no(b: bool) -> String {
 }
 
 fn main() {
-    digitnum();
+    kasaka(); // TODO
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn kasaka() {
+    input! {
+        S: String,
+    }
+
+    // let mut s_vec: Vec<String> = S.chars().map(|c| { c.to_string() }).collect::<Vec<String>>();
+    let s_vec: Vec<char> = S.chars().collect::<Vec<char>>();
+
+    // 先頭から"a"の数を数える
+    let mut front_cnt = 0;
+    for s in &s_vec {
+        if 'a' == *s {
+            front_cnt += 1;
+        } else {
+            break;
+        }
+    }
+
+    if front_cnt == s_vec.len() {
+        println!("Yes");
+        return;
+    }
+
+    // 後ろから"a"の数を数える
+    let mut back_cnt = 0;
+    let len_S = s_vec.len();
+    // for i in (0..len_S).rev().step_by(2) {
+    for i in (0..len_S).rev() {
+        // println!("i: {}", i);
+        if 'a' == s_vec[i] {
+            back_cnt += 1;
+        } else {
+            break;
+        }
+    }
+
+    if front_cnt > back_cnt {
+        println!("No");
+        return;
+    }
+
+    // let add_cnt: usize = back_cnt - front_cnt; 
+    // for _ in 1..=add_cnt {
+    //     s_vec.insert(0, 'a');
+    // }
+
+    // println!("{:?}", s_vec);
+
+    // let add_a: String = "a".repeat(back_cnt - front_cnt);
+    // let new_s_vec: Vec<String> = (add_a + &S).chars().map(|c| {c.to_string()} ).collect::<Vec<String>>();
+
+    // let len_s = new_s_vec.len();
+    // for i in 0..len_s {
+    //     if new_s_vec[i] != new_s_vec[len_s-i-1]{
+    //         println!("No");
+    //         return;
+    //     }
+    // }
+
+    let len_s = s_vec.len();
+    for i in front_cnt..(len_s - back_cnt) {
+        if s_vec[i] != s_vec[front_cnt+len_s-back_cnt-i-1]{
+            println!("No");
+            return;
+        }
+    }
+
+    println!("Yes");
 }
 
 /// https://qiita.com/sano192/items/abea29fc42030300f379
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn digitnum() {
-    println!("TODO");
+    input! {
+        N: i64,
+    }
+
+    /*
+    f(1)=1,f(2)=2,...f(9)=9,
+    f(10)=1,f(11)=2,...f(99)=90,
+    f(100)=1,f(101)=2,f(102)=3,...,f(999)=900
+    */
+
+    const MOD: i64 = 998244353;
+    let mut ans: i64 = 0;
+    for p10 in (1..=18).map(|x| { 10_i64.pow(x) } ) {
+        let left: i64 = p10 / 10;
+        let right: i64 = min(p10 - 1, N);
+        if left <= right {
+            let X: i64 = (right - left) + 1;
+            ans += triangular_num(X, MOD);
+            ans %= MOD;
+        }        
+    }
+    println!("{}", ans);
 }
+
+#[allow(non_snake_case)]
+fn triangular_num(X: i64, MOD: i64) -> i64 {
+    let mod_x: i64 = X % MOD;
+    let res:i64 = (mod_x * (mod_x + 1) / 2) % MOD;
+    res
+}
+
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn matrix_transposition() {
+    input! {
+        H: usize, W: usize,
+        A: [[usize; W]; H],
+    }
+
+    for x in 0..W {
+        for y in 0..H {
+            print!("{} ", A[y][x]);
+        }
+        println!("");
+    }
+}
+
+
+
+/// https://atcoder.jp/contests/abc237/tasks/abc237_a
+#[allow(non_snake_case)]
+#[fastout]
+#[allow(dead_code)]
+fn not_overflow() {
+    input! {
+        N: i64,
+    }
+
+    const M: i64 = 1 << 31;
+    // if -2_i64.pow(31) <= N && N < 2_i64.pow(31) {
+    if -M <= N && N < M {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
 
 /// https://atcoder.jp/contests/abc238/tasks/abc238_b
 #[allow(non_snake_case)]
