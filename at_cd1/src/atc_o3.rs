@@ -11,7 +11,76 @@ fn yes_or_no(b: bool) -> String {
 }
 
 fn main() {
-    kasaka(); // TODO
+    rotate();
+}
+
+/// https://qiita.com/sano192/items/84e199b2faeae293b02b
+fn rotate() {
+    println!("TODO");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn route_map() {
+    input! {
+        N: usize, M: usize,
+        S: [String; N],
+        T: [String; M], 
+    }
+
+    let map_stop: HashSet<String> = T.into_iter().collect::<HashSet<String>>();
+
+    for i in 0..N {
+        if map_stop.contains(&S[i]) {
+            println!("Yes");
+        } else {
+            println!("No");
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn who_is_missing() {
+    input! {
+        N: usize,
+        A: [usize; 4*N-1],
+    }
+
+    // カウント用の配列
+    let mut cnt_vec: Vec<usize> = vec![0; N+1];
+
+    for i in 0..(4*N-1) {
+        cnt_vec[A[i]] += 1;
+    }
+
+    for i in 0..=N {
+        if cnt_vec[i] == 3 {
+            println!("{}", i);
+            return;
+        }
+    }
+}
+
+
+/// https://qiita.com/sano192/items/65b0d06829c5378cdf0e
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn chukodai() {
+    input! {
+        S: String,
+        a: usize, b: usize, 
+    }
+    let mut s_vec: Vec<String> = S.chars().map(|c| { c.to_string() }).collect::<Vec<String>>();
+    let a_str: String = s_vec[a-1].to_owned();
+    let b_str: String = s_vec[b-1].to_string();
+    s_vec[a-1] = b_str;
+    s_vec[b-1] = a_str;
+    
+    println!("{}", s_vec.join(""));
 }
 
 #[allow(non_snake_case)]
