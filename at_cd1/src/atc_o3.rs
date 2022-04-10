@@ -1,5 +1,5 @@
 use proconio::{ input, fastout };
-use std::collections::{ HashSet };
+use std::collections::{ HashSet, HashMap };
 use std::cmp::{ min, max };
 
 fn yes_or_no(b: bool) -> String {
@@ -11,12 +11,79 @@ fn yes_or_no(b: bool) -> String {
 }
 
 fn main() {
-    rotate();
+    the_kth_time_query();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn the_kth_time_query() {
+    input! {
+        N: usize, Q: usize,
+        A: [usize; N],
+        XK: [(usize, usize); Q],
+    }
+
+    let mut A_cnt_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (index, a) in A.iter().enumerate() {
+        A_cnt_map.entry(*a).or_insert(vec![]).push(index+1);
+        // let cnt = A_cnt_map.entry(a).or_insert(vec![]).push(index+1);
+        // *cnt += 1;
+    }
+
+    for xk in XK {
+        let (x, k) = xk;
+        if A_cnt_map.contains_key(&x) {
+            let vec_index: Vec<usize> = A_cnt_map.get(&x).unwrap().to_vec();
+            if k <= vec_index.len() {
+                println!("{}", vec_index[k-1]);
+            } else {
+                println!("-1");    
+            }
+        } else {
+            println!("-1");
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn climbing_takahashi() {
+    input! {
+        N: usize,
+        H: [usize; N],
+    }
+
+    let mut i = 0;
+    let mut ans: usize = 0;
+    while (i <= N -1) && (ans < H[i]) {
+        ans = H[i];
+        i += 1;
+    }
+    println!("{}", ans);
 }
 
 /// https://qiita.com/sano192/items/84e199b2faeae293b02b
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn rotate() {
-    println!("TODO");
+    input! { 
+        abc: String,
+    }
+
+    // let abc: Vec<usize> = abc.chars().map(|c| c.to_string().parse::<usize>().ok().unwrap()).collect::<Vec<usize>>();
+    let abc: Vec<String> = abc.chars().map(|c| c.to_string()).collect::<Vec<String>>();
+    let (a, b, c) = (abc[0].to_owned(), abc[1].to_owned(), abc[2].to_owned());
+    let abc: usize = vec![a.to_owned(), b.to_owned(), c.to_owned()].join("").parse::<usize>().ok().unwrap();
+    let bca: usize = vec![b.to_owned(), c.to_owned(), a.to_owned()].join("").parse().ok().unwrap();
+    let cab: usize = vec![c, a, b].join("").parse().ok().unwrap();
+
+    let ans: usize = abc + bca + cab;
+    
+    println!("{}", ans);
+    
 }
 
 #[allow(non_snake_case)]
