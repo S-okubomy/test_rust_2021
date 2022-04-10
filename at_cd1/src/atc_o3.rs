@@ -11,7 +11,128 @@ fn yes_or_no(b: bool) -> String {
 }
 
 fn main() {
-    the_kth_time_query();
+    the_kth_time_query5();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn the_kth_time_query5() {
+    input! {
+        N: usize, Q: usize,
+        A: [usize; N],
+        XK: [(usize, usize); Q],
+    }
+
+    let mut A_cnt_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (index, a) in A.iter().enumerate() {
+        A_cnt_map.entry(*a).or_insert(vec![]).push(index+1);
+    }
+
+    for xk in XK {
+        let (x, k) = xk;
+        if A_cnt_map.contains_key(&x) {
+            let vec_index: &Vec<usize> = A_cnt_map.get(&x).unwrap();
+            if k <= vec_index.len() {
+                println!("{}", vec_index[k-1]);
+            } else {
+                println!("-1");    
+            }
+        } else {
+            println!("-1");
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn the_kth_time_query4() {
+    input! {
+        N: usize, Q: usize,
+        A: [usize; N],
+        XK: [(usize, usize); Q],
+    }
+
+    let mut A_cnt_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (index, a) in A.iter().enumerate() {
+        A_cnt_map.entry(*a).or_insert(vec![]).push(index+1);
+    }
+
+    for xk in XK {
+        let (x, k) = xk;
+        let vec_index_opt: Option<&Vec<usize>> = A_cnt_map.get(&x);
+        if None != vec_index_opt {
+            let vec_index: &Vec<usize> = vec_index_opt.unwrap();
+            if k <= vec_index.len() {
+                println!("{}", vec_index[k-1]);
+            } else {
+                println!("-1");    
+            }
+        } else {
+            println!("-1");
+        }
+    }
+}
+
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn the_kth_time_query3() {
+    input! {
+        N: usize, Q: usize,
+        A: [usize; N],
+        XK: [(usize, usize); Q],
+    }
+
+    let mut A_cnt_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (index, a) in A.iter().enumerate() {
+        A_cnt_map.entry(*a).or_insert(vec![]).push(index+1);
+        // let cnt = A_cnt_map.entry(a).or_insert(vec![]).push(index+1);
+        // *cnt += 1;
+    }
+
+    for xk in XK {
+        let (x, k) = xk;
+        if !A_cnt_map.contains_key(&x) || k > A_cnt_map.get(&x).unwrap().len() {
+            println!("-1");
+        } else {
+            let vec_index: &Vec<usize> = A_cnt_map.get(&x).unwrap();
+            println!("{}", vec_index[k-1]);
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn the_kth_time_query2() {
+    input! {
+        N: usize, Q: usize,
+        A: [usize; N],
+        XK: [(usize, usize); Q],
+    }
+
+    let mut A_cnt_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (index, a) in A.iter().enumerate() {
+        A_cnt_map.entry(*a).or_insert(vec![]).push(index+1);
+    }
+
+    for xk in XK {
+        let (x, k) = xk;
+        let vec_index_opt: Option<&Vec<usize>> = A_cnt_map.get(&x);
+        if None != vec_index_opt {
+            let vec_index: Vec<usize> = vec_index_opt.unwrap().to_vec(); // to_vec()すると遅い
+            if k <= vec_index.len() {
+                println!("{}", vec_index[k-1]);
+            } else {
+                println!("-1");    
+            }
+        } else {
+            println!("-1");
+        }
+    }
 }
 
 #[allow(non_snake_case)]
