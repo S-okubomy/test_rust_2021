@@ -11,7 +11,70 @@ fn yes_or_no(b: bool) -> String {
 }
 
 fn main() {
-    the_kth_time_query5();
+    happy_new_year();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn happy_new_year() {
+    input! {
+        K: usize,
+    }
+
+    let ans: String = cnv_bin(K);
+    println!("{}", ans);
+}
+
+fn cnv_bin(mut x: usize) -> String {
+    let mut tmp_vec: Vec<String> = Vec::new();
+    while x > 0 {
+        tmp_vec.push((x % 2).to_string());
+        x /= 2;
+    }
+    let tmp_string = tmp_vec.into_iter().rev().collect::<String>();
+    tmp_string.replace("1", "2")
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn longest_segment() {
+    input! {
+        N: usize,
+        xy: [(isize, isize); N],
+    }
+
+    let mut max_dist: f64 = 0.0;
+    for i in 0..N {
+        let (x1, y1): (isize, isize) = xy[i];
+        for j in (i+1)..N {
+            let (x2, y2) = xy[j];
+            max_dist = max_dist.max(dist(x1, x2, y1, y2));
+        }
+    }
+    println!("{}", max_dist);
+}
+
+fn dist(x1: isize, x2: isize, y1: isize, y2: isize) -> f64 {
+    (((x2 - x1).pow(2) + (y2 - y1).pow(2)) as f64).sqrt()
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn weird_function() {
+    input! {
+        t: usize,
+    }
+
+    // f(f(f(t)+t)+f(f(t)))
+    let ans: usize = f1(f1(f1(t) + t) + f1(f1(t)));
+    println!("{}", ans);
+}
+
+fn f1(x: usize) -> usize {
+    x.pow(2) + 2 * x + 3
 }
 
 #[allow(non_snake_case)]
