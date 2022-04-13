@@ -1,13 +1,37 @@
 use proconio::{ input, fastout }; 
 
 fn main() {
-    product2();
+    qq_solver();
 }
 
-fn product2() {
-    // TODO 全探索
-    // https://atcoder.jp/contests/abc233/submissions/28354159
+fn qq_solver() {
     println!("TODO");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn product2() {
+    input!{
+        N: usize, X: usize,
+        A: [[usize]; N],
+    }
+
+    let mut seki_vec: Vec<usize> = Vec::new();
+    seki_vec.push(1);
+    for i in 0..N {
+        let mut tmp_seki_vec: Vec<usize> = Vec::new();
+        for ai in &A[i] {
+            for seki in &seki_vec {
+                if ai > &(X / seki) { continue; };
+                tmp_seki_vec.push(ai * seki);
+            } 
+        }
+        seki_vec = tmp_seki_vec;
+    }
+
+    let ans = seki_vec.iter().filter(|seki| { **seki == X }).count();
+    println!("{}", ans);
 }
 
 #[allow(non_snake_case)]
