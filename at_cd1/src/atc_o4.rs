@@ -1,11 +1,30 @@
 use proconio::{ input, fastout }; 
 
 fn main() {
-    qq_solver();
+    caesar_cipher();
 }
 
+fn caesar_cipher() {
+
+}
+
+// https://qiita.com/sano192/items/3cb3ae52adae8829c94f
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn qq_solver() {
-    println!("TODO");
+    input! {
+        S: String,
+    }
+    let tmp_vec: Vec<String> = S.chars().map(|c| { c.to_string() }).collect();
+    let ans: i64 = my_parse::<i64>(tmp_vec[0].to_owned()) * my_parse::<i64>(tmp_vec[2].to_owned());
+    println!("{}", ans);
+}
+
+fn my_parse <T> (s: String) -> T
+    where T: std::str::FromStr
+{
+    s.trim().parse().ok().unwrap()
 }
 
 #[allow(non_snake_case)]
