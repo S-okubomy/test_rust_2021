@@ -1,7 +1,131 @@
-use proconio::{ input, fastout }; 
+use proconio::{ input, fastout };
+use itertools::Itertools;
 
 fn main() {
-    caesar_cipher();
+    graph_isomorphism2();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn graph_isomorphism2() {
+    input! {
+        N: usize, M: usize,
+        AB: [(usize, usize); M],
+        CD: [(usize, usize); M],
+    }
+
+    // 高橋くんのおもちゃ：つながってるボール
+    let mut t_vec: Vec<Vec<usize>> = vec![vec![]; N];
+    for (a, b) in AB {
+        t_vec[a-1].push(b-1);
+        t_vec[b-1].push(a-1);
+    }
+
+    // 配列の各要素について順番を小さい順にソート
+    // for t in t_vec.iter() {
+    //     t.sort_by(|a,b| { a.cmp(b) });
+    // }
+
+    // 配列の各要素について順番を小さい順にソート
+    let t_vec_sort: Vec<Vec<usize>> = t_vec.into_iter().map(|mut t| {
+        t.sort_by(|a,b| { a.cmp(b) });
+        t
+    }).collect();
+
+    // 青木くんのおもちゃ：つながっているボールの情報
+    let mut a_edge_vec: Vec<(usize, usize)> = Vec::new();
+    for cd in CD {
+        a_edge_vec.push(cd);
+    }
+
+    let perm_vec: Vec<usize> = (0..N).collect();
+    for perm in perm_vec.iter().permutations(N) {
+        // 青木くんのおもちゃ：つながっているボール
+        let mut a_vec: Vec<Vec<usize>> = vec![vec![]; N];
+        // println!("p: {:?}", perm);
+        for (c, d) in &a_edge_vec {
+            let c_conv: usize = *perm[c-1];
+            let d_conv: usize = *perm[d-1];
+            a_vec[c_conv].push(d_conv);
+            a_vec[d_conv].push(c_conv);
+        }
+
+        // 配列の各要素について順番を小さい順にソート
+        let a_vec_sort: Vec<Vec<usize>> = a_vec.into_iter().map(|mut a| { a.sort_by(|a, b| a.cmp(b)); a }).collect();
+        // println!("t: {:?}", t_vec_sort);
+        // println!("a: {:?}", a_vec_sort);
+
+        // おもちゃが一致したら
+        if t_vec_sort == a_vec_sort {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
+
+    /*
+        4 4
+        1 2
+        1 3
+        1 4
+        3 4
+        1 3
+        1 4
+        2 3
+        3 4
+        p: [0, 1, 2, 3]
+        t: [[1, 2, 3], [0], [0, 3], [0, 2]]
+        a: [[2, 3], [2], [0, 1, 3], [0, 2]]
+
+        p: [2, 1, 0, 3]
+        t: [[1, 2, 3], [0], [0, 3], [0, 2]]
+        a: [[1, 2, 3], [0], [0, 3], [0, 2]]
+        Yes
+    */
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn graph_isomorphism() {
+    input! {
+        N: usize, M: usize,
+        AB: [(usize, usize); M],
+        CD: [(usize, usize); M],
+    }
+
+    let mut t_vec: Vec<Vec<bool>> = vec![vec![false; N]; N];
+    let mut a_vec: Vec<Vec<bool>> = vec![vec![false; N]; N];
+
+    for (a, b) in AB {
+        t_vec[a-1][b-1] = true;
+        t_vec[b-1][a-1] = true;
+    }
+
+    for (c, d) in CD {
+        a_vec[c-1][d-1] = true;
+        a_vec[d-1][c-1] = true;
+    }
+
+    let perm_vec: Vec<usize> = (0..N).collect();
+    for perm in perm_vec.iter().permutations(N) {
+        let mut enable = true;
+        'outer: for i in 0..N {
+            for j in 0..N {
+                if t_vec[i][j] != a_vec[*perm[i]][*perm[j]] {
+                    enable = false;
+                    break 'outer;
+                }
+            }
+        }
+        if enable {
+            println!("Yes");
+            return;
+        }
+    }
+
+    println!("No");
 }
 
 #[allow(non_snake_case)]
