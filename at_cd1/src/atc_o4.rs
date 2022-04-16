@@ -4,8 +4,26 @@ fn main() {
     caesar_cipher();
 }
 
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn caesar_cipher() {
+    input! {
+        S: String,
+        T: String,
+    }
 
+    // 「a」= 97,「b」=98,...「z」= 122
+    // a~zまでは26個なので、1個ずつずらす
+    for i in 0..=(26-1) {
+        let af_vec: Vec<u8> = S.chars().map(|code| { (97 + (code as u8 - 97 + i) % 26) as u8 }).collect();
+        let af_string: String = String::from_utf8(af_vec).unwrap();
+        if T == af_string {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }
 
 // https://qiita.com/sano192/items/3cb3ae52adae8829c94f
