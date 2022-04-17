@@ -4,13 +4,69 @@ use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
 fn main() {
-    last_card();
+    key_building();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn key_building() {
+    input! {
+        N: usize,
+        S: [usize; N],
+    }
+
+    let mut correct_vec: Vec<usize> = Vec::new();
+    for a in 1..1001 {
+        for b in 1..1001 {
+            // 4ab+3a+3b
+            let correct_s = 4*a*b + 3*a + 3*b;
+            correct_vec.push(correct_s); 
+        }
+    }
+
+    let mut mis_cnt = 0;
+    for s in S {
+        if !correct_vec.contains(&s) {
+            mis_cnt += 1;
+        }
+    }
+    
+    println!("{}", mis_cnt);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn last_card2() {
+    input! {
+        N: usize, mut K: usize, A: usize,
+    }
+
+    let mut now = A;
+    K -= 1;
+    while K > 0 {
+        now = (now + 1) % N;
+        if now == 0 { now = N; }
+        K -= 1;
+    }
+
+    println!("{}", now);
 }
 
 
 /// https://qiita.com/sano192/items/7be07fd4d0bb8442dc73
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn last_card() {
-    println!("TODO");
+    input! {
+        N: usize, K: usize, A: usize,
+    }
+
+    let mut ans = (A + K -1) % N;
+    if ans == 0 { ans = N; }
+    println!("{}", ans);
 }
 
 #[allow(non_snake_case)]
