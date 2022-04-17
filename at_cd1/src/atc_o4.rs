@@ -1,10 +1,125 @@
 use proconio::{ input, fastout };
 use itertools::Itertools;
 use std::collections::{ HashMap };
+use std::cmp::{ min, max };
 
 fn main() {
-    counting2();
+    hard_calculation2();
 }
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn hard_calculation2() {
+    input! {
+        mut A: u64, mut B: u64,
+    }
+
+    while A > 0 && B > 0 {
+        if (A % 10) + (B % 10) >= 10 {
+            println!("Hard");
+            return;
+        }
+        A /= 10;
+        B /= 10;
+        // println!("A: {} B: {}", A, B);
+    }
+    println!("Easy");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn hard_calculation() {
+    input! {
+        A: String, B: String,
+    }
+    let A_vec: Vec<u64> = A.chars().map(|c| { c.to_string().parse::<u64>().ok().unwrap() }).collect();
+    let B_vec: Vec<u64> = B.chars().map(|c| { c.to_string().parse::<u64>().ok().unwrap() }).collect();
+
+    let A_len = A_vec.len();
+    let B_len = B_vec.len();
+    let len_num = min(A_len, B_len);
+    for i in 0..len_num {
+        if A_vec[A_len-i-1] + B_vec[B_len-i-1] >= 10 {
+            println!("Hard");
+            return;
+        }
+    }
+    println!("Easy");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn first_grid() {
+    input! {
+        S1: String,
+        S2: String,
+    }
+
+    if S1 == ".#" && S2 == "#." {
+        println!("No");
+    } else if S1 == "#." && S2 == ".#" {
+        println!("No");
+    } else {
+        println!("Yes");
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn triple_metre2() {
+    input! {
+        S: String,
+    }
+
+    let mut T: String = "".to_string();
+    for _i in 0..10 {
+        T += "oxx";
+    }
+
+    if T.contains(&S) {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn triple_metre() {
+    input! {
+        S: String,
+    }
+
+    let T: String =  "oxx".repeat(10);
+    if T.contains(&S) {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+/// https://qiita.com/sano192/items/335715b83bd473252783
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn atcoder_quiz3() {
+    input! {
+        N: usize,
+    }
+
+    let mut num = N;
+    if num >= 42 {
+        num += 1;
+    }
+
+    println!("AGC{:>03}", num);
+}
+
 
 #[allow(non_snake_case)]
 #[allow(dead_code)]
@@ -80,6 +195,7 @@ fn election() {
 }
 
 
+/// https://qiita.com/sano192/items/2b2656202b767109387e
 #[allow(non_snake_case)]
 #[allow(dead_code)]
 #[fastout]
