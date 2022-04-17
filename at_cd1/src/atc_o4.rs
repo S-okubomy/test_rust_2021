@@ -4,7 +4,12 @@ use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
 fn main() {
-    key_building();
+    round_decimals();
+}
+
+/// https://qiita.com/sano192/items/9791b2389d623c1f18d9
+fn round_decimals() {
+    println!("TODO");
 }
 
 #[allow(non_snake_case)]
