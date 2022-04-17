@@ -4,7 +4,13 @@ use std::collections::{ HashMap };
 use std::cmp::{ min, max };
 
 fn main() {
-    hard_calculation2();
+    on_and_off();
+}
+
+
+/// https://qiita.com/sano192/items/ce8f321bb5aedfa895cd
+fn on_and_off() {
+    println!("TODO");
 }
 
 #[allow(non_snake_case)]
@@ -49,6 +55,7 @@ fn hard_calculation() {
     println!("Easy");
 }
 
+/// https://atcoder.jp/contests/abc229/tasks/abc229_a
 #[allow(non_snake_case)]
 #[allow(dead_code)]
 #[fastout]
