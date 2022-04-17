@@ -3,12 +3,17 @@ use itertools::Itertools;
 use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
+#[allow(unused_macros)]
 macro_rules! round {
     ($x:expr, $scale:expr) => (($x * $scale).round() / $scale)
 }
+
+#[allow(unused_macros)]
 macro_rules! ceil {
     ($x:expr, $scale:expr) => (($x * $scale).ceil() / $scale)
 }
+
+#[allow(unused_macros)]
 macro_rules! floor {
     ($x:expr, $scale:expr) => (($x * $scale).floor() / $scale)
 }
