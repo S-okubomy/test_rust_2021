@@ -1,9 +1,97 @@
 use proconio::{ input, fastout };
 use itertools::Itertools;
+use std::collections::{ HashMap };
 
 fn main() {
-    graph_isomorphism2();
+    counting2();
 }
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn counting2() {
+    input! {
+        N: isize, Q: isize,
+        mut A: [isize; N],
+        X: [isize; Q],
+    }
+
+    A.sort_by(|a,b| { a.cmp(b) });
+    for q in 0..Q {
+        let mut left = -1;
+        let mut right = N;
+        while 1 < right - left {
+            let md = (right + left) / 2;
+            if X[q as usize] <= A[md as usize] {
+                right = md;
+            } else {
+                left = md;
+            }
+            // println!("{} {}", left, right);
+        }
+        println!("{}", N - right);
+    }
+
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn election2() {
+    input! {
+        N: usize,
+        S: [String; N],
+    }
+
+    let mut vote_map: HashMap<String, u8> = HashMap::new();
+    for s in S {
+        let cnt = vote_map.entry(s).or_insert(0);
+        *cnt += 1;
+    }
+
+    let kouho = vote_map.iter().max_by_key(|vote| vote.1).unwrap().0;
+    println!("{}", kouho);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn election() {
+    input! {
+        N: usize,
+        S: [String; N],
+    }
+
+    let mut vote_map: HashMap<String, u8> = HashMap::new();
+    for s in S {
+        let cnt = vote_map.entry(s).or_insert(0);
+        *cnt += 1;
+    }
+
+    let mut max_u = "";
+    let mut max_cnt = 0;
+    for (k, cnt) in &vote_map {
+        if max_cnt < *cnt {
+            max_cnt = *cnt;
+            max_u = k;
+        }
+    }
+    println!("{}", max_u)
+}
+
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn water_pressure() {
+    input! {
+        D: u16,
+    }
+    let ans = D as f64 / 100_f64;
+    println!("{}", ans);
+}
+
+
 
 #[allow(non_snake_case)]
 #[allow(dead_code)]
