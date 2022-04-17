@@ -1,16 +1,65 @@
 use proconio::{ input, fastout };
 use itertools::Itertools;
-use std::collections::{ HashMap };
+use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
 fn main() {
-    on_and_off();
+    last_card();
+}
+
+
+/// https://qiita.com/sano192/items/7be07fd4d0bb8442dc73
+fn last_card() {
+    println!("TODO");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn takahashi_secret() {
+    input! {
+        N: usize, X: usize,
+        A: [usize; N],
+    }
+
+    let mut known_map: HashSet<usize> = HashSet::new();
+
+    let mut known = X;
+    let mut ans = 0;
+    for _i in 0..N {
+        if known_map.contains(&known) {
+            println!("{}", ans);
+            return;
+        }
+        known_map.insert(known);
+        known = A[known-1];
+        ans += 1;
+    }
+    println!("{}", ans);
 }
 
 
 /// https://qiita.com/sano192/items/ce8f321bb5aedfa895cd
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn on_and_off() {
-    println!("TODO");
+    input! {
+        S: i8, T: i8, X: i8, 
+    }
+    if S < T {
+        if S <= X && X < T {
+            println!("Yes");
+        } else {
+            println!("No");
+        }
+    } else {
+        if S <= X || X < T {
+            println!("Yes");
+        } else {
+            println!("No");
+        }
+    }
 }
 
 #[allow(non_snake_case)]
