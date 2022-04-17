@@ -3,13 +3,36 @@ use itertools::Itertools;
 use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
+macro_rules! round {
+    ($x:expr, $scale:expr) => (($x * $scale).round() / $scale)
+}
+macro_rules! ceil {
+    ($x:expr, $scale:expr) => (($x * $scale).ceil() / $scale)
+}
+macro_rules! floor {
+    ($x:expr, $scale:expr) => (($x * $scale).floor() / $scale)
+}
+
 fn main() {
-    round_decimals();
+    counting_arrays();
+}
+
+fn counting_arrays() {
+    println!("TODO");
 }
 
 /// https://qiita.com/sano192/items/9791b2389d623c1f18d9
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn round_decimals() {
-    println!("TODO");
+    input! {
+        X: f64,
+    }
+    println!("{}", round!(X, 1.0));
+
+    // let x: f32 = 3.7183;
+    // println!("round: {:?} -> {:?}", x, round!(x, 1000.0));
 }
 
 #[allow(non_snake_case)]
