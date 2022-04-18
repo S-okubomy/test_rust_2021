@@ -18,12 +18,89 @@ macro_rules! floor {
     ($x:expr, $scale:expr) => (($x * $scale).floor() / $scale)
 }
 
+/// https://qiita.com/sano192/items/6ef1fae456eafc7f262b
+
 fn main() {
-    counting_arrays();
+    tires();
 }
 
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn tires() {
+    input! {
+        S: String,
+    }
+
+    if S.ends_with("er") {
+        println!("er");
+    } else {
+        println!("ist");
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn star_or_not() {
+    input! {
+        N: usize,
+        ab: [(usize, usize); N-1],
+    }
+    let mut n_vec: Vec<Vec<usize>> = vec![vec![]; N+1];
+    for (a, b) in ab {
+        n_vec[a].push(b);
+        n_vec[b].push(a);
+    }
+    let max_edge_len: usize = n_vec.iter().max_by_key(|x| x.len()).unwrap().len();
+    if max_edge_len == N-1 {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+fn yes_or_no(b: bool) -> String {
+    if b {
+        String::from("Yes")
+    } else {
+        String::from("No")
+    }
+}
+
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn distinct_strings() {
+    input! {
+        S: String,
+    }
+
+    let s_set: HashSet<String> = S.chars().map(|c| c.to_string()).collect();
+    // println!("{:?}", s_set);
+    let s_set_len = s_set.len();
+    match s_set_len {
+        1 => println!("1"),
+        2 => println!("3"),
+        3 => println!("6"),
+        _ => (),
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
 fn counting_arrays() {
-    println!("TODO");
+    input! {
+        N: usize,
+        A: [[usize]; N] // 先頭が要素数なら要素数の定義いらない
+    }
+    // let a_set: HashSet<String> = A.into_iter().map(|a| { a.into_iter().collect::<String>() })
+    //     .collect::<HashSet<String>>();
+    let a_set: HashSet<Vec<usize>> = A.into_iter().collect::<HashSet<Vec<usize>>>();
+    // println!("{:?}", a_set);
+    println!("{}", a_set.len());
 }
 
 /// https://qiita.com/sano192/items/9791b2389d623c1f18d9
