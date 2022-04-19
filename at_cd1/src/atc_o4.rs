@@ -3,6 +3,161 @@ use itertools::Itertools;
 use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
+fn main() {
+    base_k();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn base_k() {
+    input! {
+        K: usize,
+        A: String, B: String,
+    }
+
+    let ans = get_ten_val(A, K) * get_ten_val(B, K);
+    println!("{}", ans);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+fn get_ten_val(s: String, K: usize) -> usize {
+    let v: Vec<usize> = s.chars().map(|c| c.to_string().parse::<usize>().ok().unwrap()).collect::<Vec<usize>>(); 
+    let v_rev: Vec<usize> = v.into_iter().rev().collect(); // 下の位から計算するため、revする
+
+    let mut res = 0;
+    for (index, x) in v_rev.iter().enumerate() {
+        res += x * K.pow(index as u32);
+    }
+    res
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn find_multiple() {
+    input! {
+        A: u16, B: u16, C: u16,
+    }
+
+    for x in A..=B {
+        if x % C == 0 {
+            println!("{}", x);
+            return;
+        }
+    }
+
+    println!("-1");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn typo() {
+    input! {
+        S: String,
+        T: String,
+    }
+
+    if S == T {
+        println!("Yes");
+        return;
+    }
+
+    let s_vec: Vec<String> = S.chars().map(|c| c.to_string()).collect();
+    let s_vec_len = s_vec.len();
+    for i in 0..s_vec_len-1 {
+        let mut copy_s_vec: Vec<String> = s_vec.clone();
+        copy_s_vec.swap(i, i+1);
+        let copy_string: String = copy_s_vec.into_iter().collect();
+        if T == copy_string {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn seismic_magnitude_scales() {
+    input! {
+        A: u32, B: u32,
+    }
+
+    let ans = 32_u32.pow(A-B);
+    println!("{}", ans);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn failing_grade() {
+    input! {
+        N: usize, P: usize,
+        A: [usize; N],
+    }
+
+    let mut miss_cnt = 0;
+    for a in A {
+        if a < P {
+            miss_cnt += 1;
+        }
+    }
+    println!("{}", miss_cnt);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn four_digits() {
+    input! {
+        N: String,
+    }
+
+    println!("{:0>4}", N);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn string_shifting() {
+    input! {
+        S: String,
+    }
+    let mut copy_s: String = S.to_owned();
+    let s_len = copy_s.len();
+    let mut s_vec: Vec<String> = Vec::new();
+    for _i in 0..s_len {
+        // 左シフト
+        copy_s = (&copy_s[1..s_len]).to_string() + &copy_s[0..1]; 
+        s_vec.push(copy_s.to_owned());
+    }
+    s_vec.sort_by(|a,b| a.cmp(b));
+    // println!("{:?}", s_vec);
+    println!("{}", s_vec[0]);
+    println!("{}", s_vec[s_len-1]);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn exact_price() {
+    input! {
+        X: u16,
+    }
+
+    if X != 0 && X % 100 == 0 {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+
+
 #[allow(unused_macros)]
 macro_rules! round {
     ($x:expr, $scale:expr) => (($x * $scale).round() / $scale)
@@ -20,8 +175,29 @@ macro_rules! floor {
 
 /// https://qiita.com/sano192/items/6ef1fae456eafc7f262b
 
-fn main() {
-    tires();
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn mongeness() {
+    input!{
+        H: usize, W: usize,
+        A: [[usize; W]; H],
+    }
+
+    for i1 in 0..H {
+        for i2 in (i1+1)..H {
+            for j1 in 0..W {
+                for j2 in (j1+1)..W {
+                    let is_match: bool = A[i1][j1] + A[i2][j2] <= A[i2][j1] + A[i1][j2];
+                    if !is_match {
+                        println!("No");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    println!("Yes");
 }
 
 #[allow(non_snake_case)]
