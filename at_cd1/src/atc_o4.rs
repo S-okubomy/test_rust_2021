@@ -4,7 +4,162 @@ use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
 fn main() {
-    base_k();
+    same_name();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn same_name() {
+    input! {
+        N: usize,
+        ST: [(String, String); N],
+    }
+    let name_set: HashSet<(String, String)> = ST.into_iter().collect();
+    println!("{}", if name_set.len() < N { "Yes" } else { "No" });
+}
+
+
+/// https://qiita.com/sano192/items/edb3e2293b9c649ad282
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn same_name_ng() { // TODO 答え合わない
+    input! {
+        N: usize,
+        ST: [(String, String); N],
+    }
+
+    let mut name_map: HashMap<String, usize> = HashMap::new();
+    for (s, t) in ST {
+        let cnt = name_map.entry(s+&t).or_insert(0);
+        *cnt += 1;
+    }
+    // println!("{:?}", name_map);
+
+    let max_cnt: usize = *name_map.iter().max_by(|a, b| (a.1).cmp(b.1)).unwrap().1;
+    if max_cnt >= 2 {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn signed_difficulty() {
+    input! {
+        XY: String,
+    }
+    let v: Vec<u8> = XY.split(".").map(|a| a.parse::<u8>().ok().unwrap()).collect();
+    let X: u8 = v[0];
+    let Y: u8 = v[1];
+
+    if Y <= 2 {
+        println!("{}-", X);
+    } else if 3 <= Y && Y <= 6 {
+        println!("{}", X);
+    } else if 7 <= Y && Y <= 9 {
+        println!("{}+", X);
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn atCoder_quiz() {
+    input! {
+        S: [String; 3],
+    }
+    let all_vec: Vec<&str> = vec!["ABC", "ARC", "AGC", "AHC"];
+    // let mut v_set: HashSet<String> = vec!["ABC", "ARC", "AGC", "AHC"].iter().map(|s| s.to_string()).collect();
+    for a in all_vec {
+        if !S.contains(&a.to_string()) {
+            println!("{}", a);
+            return;
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn lexicographic_order() {
+    input! {
+        S: String, T: String,
+    }
+    if S < T {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn qwerty() {
+    input! {
+        P: [u8; 26],
+    }
+    let ans: String = P.iter().map(|i| (97 + i - 1) as char).collect();
+    println!("{}", ans);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn weather_forecast() {
+    input! {
+        N: usize,
+        S: String,
+    }
+
+    let s_vec: Vec<String> = S.chars().map(|c| {
+        match c {
+            'o' => String::from("Yes"),
+            'x' => String::from("No"),
+            _ => "".to_string(), 
+        } 
+    }).collect();
+    println!("{}", s_vec[N-1]);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn maritozzo() {
+    input! {
+        S: [String; 3],
+        T: String,
+    }
+    let t_vec: Vec<usize> = T.chars().map(|c| c.to_string().parse::<usize>().ok().unwrap() - 1).collect();
+    let mut join_string: String = "".to_string();
+    for t in t_vec {
+        join_string += &S[t];
+    } 
+
+    println!("{}", join_string);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn at_coder_quiz2() {
+    input! {
+        X: u8,
+    }
+
+    if X < 40 {
+        println!("{}", 40 - X);
+    } else if 40 <= X && X < 70 {
+        println!("{}", 70 - X);
+    } else if 70 <= X && X < 90 {
+        println!("{}", 90 - X);
+    } else {
+        println!("expert");
+    }
 }
 
 #[allow(non_snake_case)]
