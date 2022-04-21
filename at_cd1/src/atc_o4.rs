@@ -4,7 +4,133 @@ use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
 fn main() {
-    same_name();
+    booby_prize2();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn booby_prize2() {
+    input! {
+        N: usize,
+        A: [usize; N],
+    }
+    let mut a_vec: Vec<(usize, usize)> = A.into_iter().enumerate().map(|(index, val)| (index+1, val)).collect();
+    a_vec.sort_by(|a, b| (b.1).cmp(&a.1)); // valを降順に並び替え
+    // println!("{:?}", a_vec);
+    println!("{}", a_vec[1].0);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn booby_prize() {
+    input! {
+        N: usize,
+        A: [usize; N],
+    }
+
+    let a_map: HashMap<usize, usize> = A.iter().enumerate().map(|(index, val)| (index+1, *val)).collect();
+    let mut a_vec: Vec<(usize, usize)> = a_map.into_iter().collect(); // ベクターに直す
+    a_vec.sort_by(|a, b| (b.1).cmp(&a.1)); // valを降順に並び替え
+    // println!("{:?}", a_vec);
+    println!("{}", a_vec[1].0);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn bitwise_exclusive_or2() {
+    input! {
+        A: u8, B: u8,
+    }
+
+    println!("{}", B^A);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn bitwise_exclusive_or() {
+    input! {
+        A: u8, B: u8,
+    }
+
+    for c in 0..=255 {
+        if A^c == B {
+            println!("{}", c);
+            return;
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn how_many() {
+    input! {
+        S: usize, T: usize,
+    }
+
+    let mut ans = 0;
+    for a in 0..=100 {
+        for b in 0..=100 {
+            for c in 0..=100 {
+                if a + b + c <= S && a * b * c <= T {
+                    ans += 1;
+                }
+            }
+        }
+    }
+    println!("{}", ans);
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn new_generation_abc() {
+    input! {
+        N: u8,
+    }
+    if 1 <= N && N <= 125 {
+        println!("4");
+    } else if 126 <= N && N <= 211 {
+        println!("6");
+    } else if 212 <= N && N <= 214 {
+        println!("8");
+    }
+}
+
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn log2() {
+    input! {
+        N: usize,
+    }
+
+    for k in 0..=60 {
+        if 2_usize.pow(k) > N {
+            println!("{}", k-1);
+            return;
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn your_first_judge() {
+    input! {
+        S: String,
+    }
+
+    if "Hello,World!" == S {
+        println!("AC");
+    } else {
+        println!("WA");
+    }
 }
 
 #[allow(non_snake_case)]
