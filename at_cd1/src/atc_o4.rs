@@ -4,7 +4,74 @@ use std::collections::{ HashMap, HashSet };
 use std::cmp::{ min, max };
 
 fn main() {
-    booby_prize2();
+    cycle_hit();
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn cycle_hit() {
+    input! {
+        S: [String; 4],
+    }
+
+    let s_set: HashSet<String> = S.into_iter().collect();
+
+    println!("{}", if s_set.len() == 4 { "Yes" } else { "No" });
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn blood_pressure() {
+    input! {
+        A: f32, B: f32,
+    }
+    let ans: f32 = (A - B) / 3_f32 + B;
+    println!("{}", ans); 
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn weak_password() {
+    input! {
+        X: String,
+    }
+
+    let x_vec: Vec<u8> = X.chars().map(|c| c.to_string().parse::<u8>().ok().unwrap()).collect();
+    let mut is_same = true;
+    let mut step = 0;
+    let x_vec_len = x_vec.len();
+    for i in 0..x_vec_len-1 {
+        if x_vec[i] != x_vec[i+1] {
+            is_same = false;
+        }
+        if (x_vec[i] + 1) % 10 == x_vec[i+1] {
+            step += 1;
+        }
+    }
+    if is_same || step == 3 {
+        println!("Weak");
+    } else {
+        println!("Strong");
+    }
+}
+
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+#[fastout]
+fn alloy() {
+    input! {
+        A: u8, B: u8,
+    }
+    if 0 < A && B == 0 {
+        println!("Gold");
+    } else if A == 0 && 0 < B {
+        println!("Silver");
+    } else if 0 < A && 0 < B {
+        println!("Alloy");
+    }
 }
 
 #[allow(non_snake_case)]
