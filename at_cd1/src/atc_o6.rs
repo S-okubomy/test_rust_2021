@@ -1,7 +1,100 @@
 use proconio::{ input, fastout };
 
 fn main() {
-    factorial();
+    greatest_common_divisor();
+}
+
+#[allow(dead_code)]
+fn greatest_common_divisor() {
+    input! {
+        a: usize, b: usize,
+    }
+    println!("{}", gcd(a, b));
+}
+
+fn gcd(a: usize, b: usize) -> usize {
+    if b == 0 {
+        return a;
+    }
+    gcd(b, a % b)
+}
+
+#[allow(dead_code)]
+fn factorization() {
+    input! {
+        n: usize,
+    }
+    let mut pri = n;
+    let lim: usize = (n as f64).sqrt() as usize;
+    for x in 2..=lim {
+        while pri % x == 0 {
+            print!("{} ", x);
+            pri /= x;
+        }
+    }
+    if pri >= 2 {
+        print!("{}", pri);
+    }
+}
+
+#[allow(dead_code)]
+fn divisor_enumeration() {
+    input! {
+        n: usize,
+    }
+    let mut ans_vec: Vec<usize> = Vec::new();
+    let lim: usize = (n as f64).sqrt() as usize;
+    for x in 1..=lim {
+        if n % x == 0 {
+            ans_vec.push(x);
+            ans_vec.push(n / x);
+        }
+    }
+    ans_vec.sort_by(|a, b| a.cmp(b));
+    for ans in ans_vec {
+        println!("{}", ans);
+    }
+}
+
+#[allow(dead_code)]
+fn primality_test() {
+    input! {
+        n: usize,
+    }
+
+    let lim: usize = (n as f64).sqrt() as usize;
+    for i in 2..=lim {
+        if n % i == 0 {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
+}
+
+#[allow(dead_code)]
+fn print_prime_numbers() {
+    input! {
+        n: usize,
+    }
+
+    for x in 2..=n {
+        if is_prime(x) {
+            print!("{} ", x)
+        }
+    } 
+    println!("");
+}
+
+#[allow(dead_code)]
+fn is_prime(x: usize) -> bool {
+    let lim: usize = ((x as f64).sqrt()) as usize;  
+    for i in 2..=lim {
+        if x % i == 0 {
+            return false;
+        }
+    }
+    true
 }
 
 #[allow(dead_code)]
