@@ -1,7 +1,80 @@
 use proconio::{ input, fastout };
 
 fn main() {
-    greatest_common_divisor();
+    choose_elements();
+}
+
+#[allow(dead_code)]
+fn choose_elements() {
+    input! {
+        n: usize, k: isize,
+        mut a_vec: [isize; n],
+        mut b_vec: [isize; n],
+    }
+    a_vec.insert(0, 0);
+    b_vec.insert(0, 0);
+
+    // A又はBを選択して条件を満たすかどうか
+    let mut dp: Vec<Vec<bool>> = vec![vec![false; n+1]; 3];
+    dp[1][1] = true;
+    dp[2][1] = true;
+    for j in 2..=n {
+        // A側の確認
+        if dp[1][j-1] {
+            if (a_vec[j-1] - a_vec[j]).abs() <= k {
+                dp[1][j] = true;
+            }
+            if (a_vec[j-1] - b_vec[j]).abs() <= k {
+                dp[2][j] = true;
+            }
+        }
+        // B側の確認
+        if dp[2][j-1] {
+            if (b_vec[j-1] - a_vec[j]).abs() <= k {
+                dp[1][j] = true;
+            }
+            if (b_vec[j-1] - b_vec[j]).abs() <= k {
+                dp[2][j] = true;
+            }
+        }
+    }
+
+    // println!("{:?}", dp);
+
+    if dp[1][n] || dp[2][n] {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+#[allow(dead_code)]
+fn mex() {
+    input! {
+        n: usize,
+        a_vec: [usize; n],
+    }
+
+    for x in 0..=2000 {
+        if !a_vec.iter().any(|a| *a == x) {
+            println!("{}", x);
+            return;
+        }
+    }
+} 
+
+#[allow(dead_code)]
+fn good_morning() {
+    input! {
+        a: u8, b: u8, c: u8, d: u8,
+    }
+    if a < c {
+        println!("Takahashi");
+    } else if a == c && b <= d {
+        println!("Takahashi");
+    } else {
+        println!("Aoki");
+    }
 }
 
 #[allow(dead_code)]
