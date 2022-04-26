@@ -1,7 +1,81 @@
 use proconio::{ input, fastout };
 
 fn main() {
-    choose_elements();
+    go_straight_and_turn_right();
+}
+
+#[allow(dead_code)]
+fn go_straight_and_turn_right() {
+    input! {
+        _n: usize,
+        t: String,
+    }
+    let t_vec: Vec<String> = t.chars().map(|c| c.to_string()).collect();
+    let dir_vec: Vec<(isize, isize)> = vec![(1, 0), (0,-1), (-1, 0), (0, 1)]; //東、 南、西、北
+    let mut dir_no = 0;
+    let mut posi: (isize, isize) = (0, 0); 
+    for t in t_vec {
+        match t.as_str() {
+            "R" => {
+                dir_no = (dir_no + 1) % 4;
+            },
+            "S" => {
+                posi.0 += dir_vec[dir_no].0;
+                posi.1 += dir_vec[dir_no].1;
+            },
+            _=> (),
+        }
+    }
+    println!("{} {}", posi.0, posi.1);
+}
+
+#[allow(dead_code)]
+fn last_letter() {
+    input! {
+        n: usize,
+        s: String,
+    }
+    println!("{}", &s[n-1..n]);
+}
+
+#[allow(dead_code)]
+fn choose_elements2() {
+    input! {
+        n: usize, k: isize,
+        mut a_vec: [isize; n],
+        mut b_vec: [isize; n],
+    }
+    a_vec.insert(0, 0);
+    b_vec.insert(0, 0);
+
+    let mut dp: Vec<Vec<bool>> = vec![vec![false; n+1]; 3];
+    dp[1][1] = true;
+    dp[2][1] = true;
+    for j in 2..=n {
+        // A[j-1]からの繋がり確認
+        if dp[1][j-1] {
+            if (a_vec[j-1] - a_vec[j]).abs() <= k {
+                dp[1][j] = true;
+            }
+            if (a_vec[j-1] - b_vec[j]).abs() <= k {
+                dp[2][j] = true;
+            }
+        }
+        // B[j-1]からの繋がり確認
+        if dp[2][j-1] {
+            if (b_vec[j-1] - a_vec[j]).abs() <= k {
+                dp[1][j] = true;
+            }
+            if (b_vec[j-1] - b_vec[j]).abs() <= k {
+                dp[2][j] = true;
+            }
+        }
+    }
+    if dp[1][n] || dp[2][n] {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
 }
 
 #[allow(dead_code)]
