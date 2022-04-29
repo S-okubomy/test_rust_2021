@@ -4,7 +4,54 @@ use std::collections::{ HashSet, HashMap };
 use itertools::Itertools;
 
 fn main() {
-    connect6();
+    jumping_takahashi();
+}
+
+#[allow(dead_code)]
+fn jumping_takahashi() {
+    input! {
+        n: usize, x: usize,
+        mut ab_vec: [(usize, usize); n],
+    }
+    ab_vec.insert(0, (0, 0));
+
+    // i回ジャンプして座標jにいるかどうか
+    let mut dp: Vec<Vec<bool>> = vec![vec![false; x+1]; n+1];
+    dp[0][0] = true;
+    for i in 1..=n {
+        let (a, b) = ab_vec[i];
+        for j in 1..=x {
+            if j >= a && dp[i-1][j-a] {
+                dp[i][j] = true;
+            } else if j >= b && dp[i-1][j-b] {
+                dp[i][j] = true;
+            }
+        }
+    }
+    // println!("{:?}", dp);
+    println!("{}", yes_or_no(dp[n][x]));
+}
+
+#[allow(dead_code)]
+fn count_distinct_integers() {
+    input! {
+        n: usize,
+        a_vec: [usize; n],
+    }
+    let a_map: HashSet<usize> = a_vec.into_iter().collect();
+    println!("{}", a_map.len());
+}
+
+#[allow(dead_code)]
+fn edge_checker() {
+    input! {
+        a: u8, b: u8,
+    }
+    if ((a % 10) + 1 == b) || (b % 10) + 1 == a {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
 }
 
 #[allow(dead_code)]
