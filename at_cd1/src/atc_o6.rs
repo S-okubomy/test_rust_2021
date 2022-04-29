@@ -1,7 +1,88 @@
 use proconio::{ input, fastout };
+use std::collections::{ HashSet, HashMap };
 
 fn main() {
-    go_straight_and_turn_right();
+    collision2();
+}
+
+#[allow(dead_code)]
+fn collision2() {
+    input! {
+        n: usize,
+        xy_vec : [(usize, usize); n],
+        s: String,
+    }
+    let y_map: HashSet<usize> = xy_vec.iter().map(|xy| xy.1).collect();
+    let s_vec: Vec<String> = s.chars().map(|c| c.to_string()).collect(); 
+    let mut dir_r_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    let mut dir_l_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for i in 0..n {
+        let (x, y) = xy_vec[i];
+        match s_vec[i].as_str() {
+            "R" => {
+                dir_r_map.entry(y).or_insert(vec![]).push(x);
+            },
+            "L" => {
+                dir_l_map.entry(y).or_insert(vec![]).push(x);
+            },
+            _ => (),
+        }
+    }
+
+    for y in y_map {
+        if dir_l_map.contains_key(&y) && dir_r_map.contains_key(&y) {
+            let dir_l_max: usize = *dir_l_map.get(&y).unwrap().iter().max_by(|a, b| a.cmp(b)).unwrap();
+            let dir_r_min: usize = *dir_r_map.get(&y).unwrap().iter().min_by(|a, b| a.cmp(b)).unwrap();
+            if dir_r_min <= dir_l_max {
+                println!("Yes");
+                return;
+            }
+        }
+    }
+    println!("No");
+} 
+
+#[allow(dead_code)]
+fn hit_and_blow() {
+    input! {
+        n: usize,
+        a_vec: [usize; n],
+        b_vec: [usize; n],
+    }
+    // A にも B にも含まれ、その位置も一致している整数の個数
+    let mut same_cnt = 0;
+    for i in 0..n {
+        if a_vec[i] == b_vec[i] {
+            same_cnt += 1;
+        }
+    }
+    println!("{}", same_cnt);
+
+    // A にも B にも含まれるが、その位置は異なる整数の個数。
+    let mut diff_cnt = 0;
+    for i in 0..n {
+        for j in 0..n {
+            if (i != j) && (a_vec[i] == b_vec[j]) {
+                diff_cnt += 1;
+            }
+        }
+    }
+    println!("{}", diff_cnt);
+}
+
+#[allow(dead_code)]
+fn shampoo() {
+    input! {
+        v: usize, a: usize, b: usize, c: usize,
+    }
+    let remain: usize = v % (a + b + c);
+    if remain < a {
+        println!("F");
+    } else if remain < a + b {
+        println!("M");
+    } else if remain < a + b + c {
+        println!("T");
+    }
 }
 
 #[allow(dead_code)]
