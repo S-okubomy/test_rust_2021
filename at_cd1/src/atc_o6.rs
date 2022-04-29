@@ -1,8 +1,180 @@
 use proconio::{ input, fastout };
+use std::cmp::{ min, max };
 use std::collections::{ HashSet, HashMap };
+use itertools::Itertools;
 
 fn main() {
-    collision2();
+    connect6();
+}
+
+#[allow(dead_code)]
+fn connect6() {
+    input! {
+        n: usize,
+        s: [String; n],
+    }
+    let map: Vec<Vec<char>> = s.iter().map(|s| { s.chars().collect::<Vec<char>>() }).collect::<Vec<Vec<char>>>();
+    let dir_vec: Vec<(isize, isize)> = vec![(0, 1), (1, 0), (1, 1), (1, -1)]; // 縦方向、横方向、右上方向、右下方向
+    for i in 0..n {
+        for j in 0..n {
+            let posi = (i as isize, j as isize);
+            for dir in &dir_vec {
+                if can_paint(n as isize, posi, *dir, &map) {
+                    println!("Yes");
+                    return;
+                }    
+            }
+        }
+    }
+    println!("No");
+}
+
+#[allow(dead_code)]
+fn can_paint(n: isize, posi: (isize, isize), dir: (isize, isize), map: &Vec<Vec<char>>) -> bool {
+    let (mut x, mut y) = posi;
+    let (dx, dy) = dir;
+    let mut cnt = 0;
+
+    for _ in 1..=6 {
+        if !((0 <= x && x < n) && (0 <= y && y < n)) {
+        // if !(0 <= min(x, y) && max(x,y) < n) {
+             return false;
+        }
+        match map[x as usize][y as usize] {
+            '#' => {
+                cnt += 1;
+            },
+            _ => (),
+        }
+        x += dx;
+        y += dy;
+    } 
+    // while (serch_cnt < 6) && (0 <= x && x < n) && (0 <= y && y < n) {
+    // while (serch_cnt < 6) && 0 <= min(x, y) && max(x,y) < n {
+    //     match map[x as usize][y as usize] {
+    //         '#' => {
+    //             cnt += 1;
+    //         },
+    //         _ => (),
+    //     }
+    //     x += dx;
+    //     y += dy;
+    //     serch_cnt += 1;
+    // }  
+
+    return cnt >= 4; 
+} 
+
+#[allow(dead_code)]
+fn pasta() {
+    input! {
+        n: usize, m: usize,
+        a_vec: [usize; n],
+        b_vec: [usize; m],
+    }
+    let mut pasta_map: HashMap<usize, usize> = HashMap::new();
+    for a in a_vec {
+        let cnt = pasta_map.entry(a).or_insert(0);
+        *cnt += 1;
+    }
+    for b in b_vec {
+        if pasta_map.contains_key(&b) {
+            let cnt: usize = *pasta_map.get(&b).unwrap();
+            if cnt > 0 {
+                let cnt = pasta_map.entry(b).or_default();
+                *cnt -= 1;
+            } else {
+                println!("No");
+                return;
+            }
+        } else {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
+}
+
+#[allow(dead_code)]
+fn digit_machine() {
+    input! {
+        a_vec: [u8; 10],
+    }
+
+    let mut k = 0;
+    for _i in 1..=2 {
+        k = a_vec[k as usize];
+    }
+    println!("{}", a_vec[k as usize]);
+}
+
+
+
+#[allow(dead_code)]
+fn gal_password() {
+    input! {
+        n: usize,
+    }
+
+    const MOD: usize = 998244353;
+    // 上からi桁目までを決めて、jとなる組み合わせ数（を998244353で割った余り）
+    let mut dp: Vec<Vec<usize>> = vec![vec![0; 11]; n+1];
+    dp[0][0] = 0;
+    for j in 1..=9 {
+        dp[1][j] = 1;
+    }
+
+    for i in 2..=n {
+        for j in 1..=9 {
+            dp[i][j] = (dp[i-1][j-1] + dp[i-1][j] + dp[i-1][j+1]) % MOD;
+        }
+    }
+    let ans: usize = dp[n].iter().sum(); 
+    println!("{}", ans % MOD);
+    // println!("{:?}", dp);
+}
+
+#[allow(dead_code)]
+fn minimize_ordering() {
+    input! {
+        s: String,
+    }
+    let mut s_vec: Vec<char> = s.chars().collect();
+    s_vec.sort_by(|a, b| a.cmp(b));
+    let join_string: String = s_vec.iter().map(|c| c.to_string()).collect();
+    println!("{}", join_string);
+}
+
+#[allow(dead_code)]
+fn tle_minimize_ordering() {
+    input! {
+        s: String,
+    }
+    let s_vec: Vec<String> = s.chars().map(|c| c.to_string()).collect();
+    let mut join_vec: Vec<String> = Vec::new();
+    let s_len = s.len();
+    for perm in s_vec.iter().permutations(s_len) {
+        let s_perm: String = perm.iter().map(|s| s.to_string()).collect();
+        join_vec.push(s_perm);
+    }
+    join_vec.sort_by(|a, b| a.cmp(b));
+    println!("{}", join_vec[0]);
+}
+
+#[allow(dead_code)]
+fn t_shirt() {
+    input! {
+        a: f64, b: f64, c: f64, x: f64,
+    }
+
+    if x <= a {
+        println!("{}", 1);
+    } else if a < x && x <= b {
+        let prob: f64 = c / (b - a);
+        println!("{}", prob);
+    } else {
+        println!("{}", 0);
+    }
 }
 
 #[allow(dead_code)]
