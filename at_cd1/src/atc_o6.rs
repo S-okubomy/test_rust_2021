@@ -4,7 +4,204 @@ use std::collections::{ HashSet, HashMap };
 use itertools::Itertools;
 
 fn main() {
-    jumping_takahashi();
+    route_map();
+}
+
+#[allow(dead_code)]
+fn route_map() {
+    input! {
+        n: usize, m: usize,
+        s_vec: [String; n],
+        t_vec: [String; m],
+    }
+
+    let stop_st_set: HashSet<String> = t_vec.into_iter().collect();
+    for s in s_vec {
+        if stop_st_set.contains(&s) {
+            println!("Yes");
+        } else {
+            println!("No");
+        }
+    }
+}
+
+#[allow(dead_code)]
+fn who_is_missing() {
+    input! {
+        n: usize,
+        a_vec: [usize; 4*n-1],
+    }
+
+    let mut a_map: HashMap<usize, usize> = HashMap::new();
+    for a in a_vec {
+        let cnt = a_map.entry(a).or_insert(0);
+        * cnt += 1;
+    }
+    // println!("{:?}", a_map);
+    for a in a_map {
+        if a.1 == 3 {
+            println!("{}", a.0);
+            return;
+        }
+    }
+}
+
+#[allow(dead_code)]
+fn chukodai() {
+    input! {
+        s: String,
+        a: usize, b: usize,
+    }
+    let mut s_vec: Vec<char> = s.chars().collect();
+    s_vec.swap(a-1, b-1);
+    let ans: String = s_vec.iter().collect();
+    println!("{}", ans);
+}
+
+#[allow(dead_code)]
+fn kasaka() {
+    input! {
+        s: String,
+    }
+    let s_vec: Vec<char> = s.chars().collect();
+    let mut a_rev_cnt = 0;
+    let rev_string_vec: Vec<char> = s.chars().rev().collect();   // 文字列を逆順
+    let mut a_cnt = 0;
+    for s in s_vec {
+        if 'a' == s {
+            a_cnt +=1;
+        } else {
+            break;
+        }
+    } 
+    
+    for s_rev in rev_string_vec {
+        if 'a' == s_rev {
+            a_rev_cnt += 1;
+        } else {
+            break;
+        }
+    }
+    if a_rev_cnt < a_cnt {
+        println!("No");
+        return;
+    }
+    let add_a_string: String = "a".repeat(a_rev_cnt-a_cnt) + &s;
+    let rev_add_a_string: String = add_a_string.chars().rev().collect();
+    // println!("{}", add_a_string);
+    // println!("{}", rev_add_a_string);
+    if add_a_string == rev_add_a_string {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+#[allow(dead_code)]
+fn kasaka_tle() {
+    input! {
+        s: String,
+    }
+
+    let s_vec: Vec<char> = s.chars().collect();
+    let a_int_cnt: usize = s_vec.iter().filter(|c| **c == 'a').count();
+    let mut a_cnt = 0;
+    let mut add_string: String = s;
+    let mut rev_string: String = add_string.chars().rev().collect();   // 文字列を逆順
+    if a_int_cnt == 0 && add_string != rev_string {
+        println!("No");
+        return;
+    }
+
+    while a_cnt <= a_int_cnt && a_cnt < 10_usize.pow(6) {
+        if add_string == rev_string {
+            println!("Yes");
+            return;
+        }
+        // 先頭に'a'を加える
+        add_string = "a".to_string() + &add_string;
+        rev_string = add_string.chars().rev().collect();
+        a_cnt += 1;
+    }
+    println!("No");
+}
+
+#[allow(dead_code)]
+fn matrix_transposition() {
+    input! {
+        h: usize, w: usize,
+        a_vec: [[usize;w]; h],
+    }
+    for j in 0..w {
+        for i in 0..h {
+            print!("{} ", a_vec[i][j]);
+        }
+        println!("");
+    }
+}
+
+#[allow(dead_code)]
+fn not_overflow() {
+    input! {
+        n: i64,
+    }
+
+    if - (1<<31) <= n && n < (1<<31) {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+}
+
+#[allow(dead_code)]
+fn knight_fork() {
+    input! {
+        x1: isize, y1: isize, x2: isize, y2: isize,
+    }
+
+    for x in (x1-2)..=(x1+2) {
+        for y in (y1-2)..=(y1+2) {
+            if dist(x, y, x1, y1) == 5 && dist(x, y, x2, y2) == 5 {
+                println!("Yes");
+                return;
+            }
+        }
+    }
+    println!("No");
+}
+
+#[allow(dead_code)]
+fn dist(a: isize, b: isize, c: isize, d: isize) -> isize {
+    (a - c).pow(2) + (b - d).pow(2) 
+}
+
+#[allow(dead_code)]
+fn integer_division() {
+    input! {
+        x: isize,
+    }
+
+    let ans: isize;
+    if x >= 0 {
+        ans = x / 10;
+    } else {
+        if x % 10 == 0 {
+            ans = x / 10;
+        } else {
+            ans = x / 10 -1;
+        }
+    }
+
+    println!("{}", ans);
+}
+
+#[allow(dead_code)]
+fn horizon() {
+    input! {
+        h: f64,
+    }
+    let ans: f64 = (h * (12_800_000_f64 + h)).sqrt();
+    println!("{}", ans);
 }
 
 #[allow(dead_code)]
