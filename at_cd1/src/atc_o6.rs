@@ -4,7 +4,262 @@ use std::collections::{ HashSet, HashMap };
 use itertools::Itertools;
 
 fn main() {
-    route_map();
+    product4();
+}
+
+#[allow(dead_code)]
+fn product4() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [[usize]; n],
+    }
+
+    let ans = dfs2(0, 1, n, x, &a_vec);
+    println!("{}", ans);
+}
+
+fn dfs2(posi: usize, seki: usize, n: usize, x: usize, a_vec: &Vec<Vec<usize>>) -> usize {
+    let mut cnt = 0;
+    if posi == n {
+        if x == seki {
+            cnt += 1;
+        }
+        return cnt;
+    }
+
+    for ai in &a_vec[posi] {
+        if *ai > x / seki { continue; }
+        cnt += dfs2(posi + 1, seki * ai, n, x, a_vec);
+    }
+    cnt
+}
+
+
+#[allow(dead_code)]
+fn product3() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [[usize]; n],
+    }
+
+    let mut seki_vec: Vec<usize> = Vec::new();
+    seki_vec.push(1);
+    for i in 0..n {
+        let mut tmp_seki_vec: Vec<usize> = Vec::new();
+        for seki in &seki_vec {
+            for ai in &a_vec[i] {
+                if *ai > x / *seki { continue; }
+                tmp_seki_vec.push(seki * ai);
+            }
+        }
+        seki_vec = tmp_seki_vec;
+    }
+    let ans = seki_vec.iter().filter(|seki| **seki == x).count();
+    println!("{}", ans);
+}
+
+
+
+#[allow(dead_code)]
+fn product2() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [[usize]; n],
+    }
+
+    let ans = dfs(1, 0, n, x, &a_vec);
+    println!("{}", ans)
+}
+
+fn dfs(seki: usize, posi: usize, n: usize, x: usize, a_vec: &Vec<Vec<usize>>) -> usize {
+    let mut cnt = 0;
+    if posi == n {
+        if seki == x {
+            cnt += 1;
+        }
+        return cnt;
+    }
+
+    for ai in &a_vec[posi] {
+        if *ai > x / seki { continue; }
+        cnt += dfs(seki * ai, posi + 1, n, x, &a_vec);
+    }
+    cnt
+}
+
+
+#[allow(dead_code)]
+fn product() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [[usize]; n],
+    }
+
+    let mut seki_vec: Vec<usize> = Vec::new();
+    seki_vec.push(1);
+    for i in 0..n {
+        let mut tmp_seki_vec: Vec<usize> = Vec::new();
+        for ai in &a_vec[i] {
+            for seki in &seki_vec {
+                if *ai > x / *seki { continue; }
+                tmp_seki_vec.push(seki * ai);
+            }
+        }
+        seki_vec = tmp_seki_vec;
+        // println!("{:?}", seki_vec);
+    }
+    let ans: usize = seki_vec.iter().filter(|seki| **seki == x).count();
+    println!("{}", ans);
+} 
+
+#[allow(dead_code)]
+fn a_reverse() {
+    input! {
+        mut l: usize, mut r: usize,
+        s: String,
+    }
+    let mut s_vec: Vec<char> = s.chars().collect();
+    while l < r {
+        s_vec.swap(l-1, r-1);
+        l += 1;
+        r -= 1;
+    }
+    let ans: String = s_vec.iter().map(|c| c.to_string()).collect();
+    println!("{}", ans);
+}
+
+#[allow(dead_code)]
+fn ten_yen_stamp() {
+    input! {
+        x: usize, y: usize,
+    }
+
+    let mut p: usize = 0;
+    if x < y {
+        if (y - x) % 10 == 0 {
+            p = (y - x) / 10;
+        } else {
+            p = (y - x) / 10 + 1;
+        }
+    }
+
+    println!("{}", p);
+}
+
+#[allow(dead_code)]
+fn happy_new_year() {
+    input! {
+        k: usize,
+    }
+    let ans: String = get_bin(k).replace("1", "2");
+    println!("{}", ans);
+}
+
+#[allow(dead_code)]
+fn get_bin(mut k: usize) -> String {
+    let mut bin_vec: Vec<String> = Vec::new();
+    while k > 0 {
+        bin_vec.push((k % 2).to_string());
+        k /= 2;
+    }
+    bin_vec.into_iter().rev().collect::<String>()
+}
+
+#[allow(dead_code)]
+fn longest_segment() {
+    input! {
+        n: usize,
+        xy_vec: [(f64, f64); n],
+    }
+
+    let mut len_max: f64 = 0.0;
+    for i in 0..n {
+        let (x1, y1) = xy_vec[i];
+        for j in (i+1)..n {
+            let (x2, y2) = xy_vec[j];
+            len_max = len_max.max(dist1(x1, y1, x2, y2));
+        }
+    }
+    println!("{}", len_max);
+}
+
+fn dist1(x1: f64, y1: f64, x2: f64, y2: f64) -> f64 {
+    ((x2-x1).powf(2_f64) + (y2-y1).powf(2_f64)).sqrt()
+}
+
+#[allow(dead_code)]
+fn weird_function() {
+    input! {
+        t: usize,
+    }
+    let ans = func(func(func(t)+t) + func(func(t)));
+    println!("{}", ans);
+}
+
+fn func(t: usize) -> usize {
+    t.pow(2) + 2 * t + 3
+}
+
+#[allow(dead_code)]
+#[fastout]
+fn the_kth_time_query() {
+    input! {
+        n: usize, q: usize,
+        a_vec: [usize; n],
+        xk_vec: [(usize, usize); q],
+    }
+
+    let mut a_map: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (index, a) in a_vec.iter().enumerate() {
+        a_map.entry(*a).or_insert(vec![]).push(index+1);
+    }
+
+    for xk in xk_vec {
+        let (x, k) = xk;
+        if a_map.contains_key(&x) {
+            let v: &Vec<usize> = a_map.get(&x).unwrap();
+            if k > v.len() {
+                println!("-1");
+            } else {
+                println!("{}", v[k-1]);
+            }
+        } else {
+            println!("-1");
+        }
+    }
+}
+
+#[allow(dead_code)]
+fn climbing_takahashi() {
+    input! {
+        n: usize,
+        h_vec: [usize; n],
+    }
+
+    // let ans: usize = *h_vec[0..n-1].iter().max_by(|a, b| a.cmp(b)).unwrap();
+    // println!("{}", ans);
+    let mut max_h = 0;
+    for h in h_vec {
+        if max_h < h {
+            max_h = h;
+        } else {
+            break;
+        }
+    }
+    println!("{}", max_h);
+} 
+
+#[allow(dead_code)]
+fn rotate() {
+    input! {
+        abc: String,
+    }
+    let abc_vec: Vec<char> = abc.chars().collect();
+    let abc: usize = vec![abc_vec[0], abc_vec[1], abc_vec[2]].iter().collect::<String>().parse::<usize>().ok().unwrap(); 
+    let bca: usize = vec![abc_vec[1], abc_vec[2], abc_vec[0]].iter().collect::<String>().parse::<usize>().ok().unwrap();
+    let cab: usize = vec![abc_vec[2], abc_vec[0], abc_vec[1]].iter().collect::<String>().parse::<usize>().ok().unwrap();
+    let ans: usize = abc + bca + cab;
+    println!("{}", ans); 
 }
 
 #[allow(dead_code)]
