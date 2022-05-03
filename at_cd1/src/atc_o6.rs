@@ -4,7 +4,62 @@ use std::collections::{ HashSet, HashMap };
 use itertools::Itertools;
 
 fn main() {
-    product6();
+    counting2();
+}
+
+#[allow(dead_code)]
+fn counting2() {
+    input! {
+        n: usize, q: usize,
+        mut a_vec: [usize; n],
+        x_vec: [usize; q],
+    }
+    a_vec.sort_by(|a, b| a.cmp(b));
+    for x in x_vec {
+        if x <= a_vec[0] {
+            println!("{}", n);
+            continue;
+        }
+        if a_vec[n-1] < x {
+            println!("0");
+            continue;
+        }
+        let mut l = 0;
+        let mut r = n-1;
+        while (r - l) > 1 {
+            let mid = (r + l) / 2;
+            if x <= a_vec[mid] {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        println!("{}", n-r);
+    }
+}
+
+#[allow(dead_code)]
+fn election() {
+    input! {
+        n: usize,
+        s_vec: [String; n],
+    }
+    let mut s_map: HashMap<String, usize> = HashMap::new();
+    for s in s_vec {
+        let cnt = s_map.entry(s).or_insert(0);
+        *cnt += 1;
+    }
+    let max_name: String = s_map.iter().max_by(|a, b| a.1.cmp(b.1)).unwrap().0.to_string();
+    println!("{}", max_name);
+}
+
+#[allow(dead_code)]
+fn water_pressure() {
+    input! {
+        d: f64,
+    }
+    let ans = d / 100_f64;
+    println!("{}", ans);
 }
 
 #[allow(dead_code)]
