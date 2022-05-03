@@ -4,7 +4,183 @@ use std::collections::{ HashSet, HashMap };
 use itertools::Itertools;
 
 fn main() {
-    product4();
+    product6();
+}
+
+#[allow(dead_code)]
+fn product6() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [[usize]; n],
+    }
+    let ans = dfs6(0, 1, n, x, &a_vec);
+    println!("{}", ans);
+}
+
+#[allow(dead_code)]
+fn dfs6(posi: usize, seki: usize, n: usize, x: usize, a_vec: &Vec<Vec<usize>>) -> usize {
+    let mut cnt = 0;
+    if posi == n {
+        if seki == x {
+            cnt += 1;
+        }
+        return cnt;
+    }
+
+    for ai in &a_vec[posi] {
+        if *ai > x / seki { continue; }
+        cnt += dfs6(posi + 1, seki * ai, n, x, &a_vec);
+    }
+    cnt
+}
+
+
+#[allow(dead_code)]
+fn product5() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [[usize]; n],
+    }
+    let mut seki_vec: Vec<usize> = Vec::new();
+    seki_vec.push(1);
+    for i in 0..n {
+        let mut tmp_seki_vec: Vec<usize> = Vec::new();
+        for seki in &seki_vec {
+            for ai in &a_vec[i] {
+                if *ai > x / *seki { continue; }
+                tmp_seki_vec.push(seki * ai);
+            }
+        }
+        seki_vec = tmp_seki_vec;
+    }
+
+    let ans = seki_vec.iter().filter(|seki| **seki == x).count();
+    println!("{}", ans);
+}
+
+#[allow(dead_code)]
+fn graph_isomorphism2() {
+    input! {
+        n: usize, m: usize,
+        ab_vec: [(usize, usize); m],
+        cd_vec: [(usize, usize); m],
+    }
+    let mut nb_ab: Vec<Vec<usize>> = vec![vec![]; n+1];
+    for (a, b) in ab_vec {
+        nb_ab[a].push(b);
+        nb_ab[b].push(a);
+    }
+    nb_ab = nb_ab.into_iter().map(|mut ab| { ab.sort_by(|a, b| a.cmp(b)); ab }).collect();
+
+    let perm_vec: Vec<usize> = (1..=n).collect();
+    for perm in perm_vec.iter().permutations(n) {
+        let mut nb_cd: Vec<Vec<usize>> = vec![vec![]; n+1];
+        for (c, d) in &cd_vec {
+            let c_cnv = *perm[*c-1];
+            let d_cnv = *perm[*d-1];
+            nb_cd[c_cnv].push(d_cnv);
+            nb_cd[d_cnv].push(c_cnv);
+        }
+        nb_cd = nb_cd.into_iter().map(|mut cd| { cd.sort_by(|a, b| a.cmp(b)); cd }).collect();
+        if nb_ab == nb_cd {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
+}
+
+#[allow(dead_code)]
+fn graph_isomorphism() {
+    input! {
+        n: usize, m: usize,
+        ab_vec: [(usize, usize); m],
+        cd_vec: [(usize, usize); m],
+    }
+    let mut nb_ab: Vec<Vec<usize>> = vec![vec![]; n+1];
+    for ab in ab_vec {
+        let (a, b) = ab;
+        nb_ab[a].push(b);
+        nb_ab[b].push(a);
+    }
+
+    nb_ab = nb_ab.into_iter().map(|mut ab| { ab.sort_by(|a, b| a.cmp(b)); ab }).collect();
+
+    let perm_vec: Vec<usize> = (1..=n).collect();
+    for perm in perm_vec.iter().permutations(n) {
+        println!("{:?}", perm);
+        let mut nb_cd: Vec<Vec<usize>> = vec![vec![]; n+1];
+        for (c, d) in &cd_vec {
+            let c_cnv: usize = *perm[*c-1];
+            let d_cnv = *perm[*d-1];
+            nb_cd[c_cnv].push(d_cnv);
+            nb_cd[d_cnv].push(c_cnv);
+        }
+        nb_cd = nb_cd.into_iter().map(|mut cd| { cd.sort_by(|a, b| a.cmp(b)); cd }).collect();
+        println!("{:?}", nb_ab);
+        println!("{:?}", nb_cd);
+        if nb_ab == nb_cd {
+            println!("Yes");
+            return;
+        } 
+    }
+    println!("No");
+
+    /*
+        4 4
+        1 2
+        1 3
+        1 4
+        3 4
+        1 3
+        1 4
+        2 3
+        3 4
+        [[], [2, 3, 4], [1], [1, 4], [1, 3]]
+
+        [1, 2, 3, 4]
+        [[], [3, 4], [3], [1, 2, 4], [1, 3]]
+        [1, 2, 4, 3]
+        [[], [3, 4], [4], [1, 4], [1, 2, 3]]
+        [1, 3, 2, 4]
+        [[], [2, 4], [1, 3, 4], [2], [1, 2]]
+        [1, 3, 4, 2]
+        [[], [2, 4], [1, 4], [4], [1, 2, 3]]
+        [1, 4, 2, 3]
+        [[], [2, 3], [1, 3, 4], [1, 2], [2]]
+    */
+}
+
+#[allow(dead_code)]
+fn caesar_cipher() {
+    input! {
+        s: String,
+        t: String,
+    }
+
+    // let sp = 'a' as u8;
+    // println!("{}", sp);
+    let s_vec: Vec<char> = s.chars().collect();
+    for i in 0..26 {
+        let tmp_s_vec: Vec<char> = s_vec.iter().map(|c| (97 + (*c as u8 - 97 + i) % 26) as char).collect();
+        let tmp_string: String = tmp_s_vec.iter().map(|c| c.to_string()).collect();
+        if tmp_string == t {
+            println!("Yes");
+            return;
+        }
+        // println!("{:?}", tmp_s_vec);
+    }
+    println!("No");
+}
+
+#[allow(dead_code)]
+fn qq_solver() {
+    input! {
+        s: String,
+    }
+    let s_vec: Vec<usize> = s.chars().map(|c| c.to_string().parse::<usize>().unwrap_or(99)).collect();
+    // println!("{:?}", s_vec);
+    println!("{}", s_vec[0] * s_vec[2]);
 }
 
 #[allow(dead_code)]
