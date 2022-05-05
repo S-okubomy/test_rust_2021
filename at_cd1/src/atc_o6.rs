@@ -4,7 +4,31 @@ use std::collections::{ HashSet, HashMap };
 use itertools::Itertools;
 
 fn main() {
-    counting2();
+    triple_metre();
+}
+
+#[allow(dead_code)]
+fn triple_metre() {
+    input! {
+        s: String,
+    }
+    let t: String = "oxx".repeat(10_usize.pow(5));
+    println!("{}", if t.contains(&s) { "Yes" } else { "No" });
+}
+
+#[allow(dead_code)]
+fn atcoder_quiz3() {
+    input!{
+        n:usize,
+    }
+    let ans;
+    if n >= 42 {
+        ans = n + 1;
+    } else {
+        ans = n;
+    }
+
+    println!("AGC{:0>3}", ans);
 }
 
 #[allow(dead_code)]
