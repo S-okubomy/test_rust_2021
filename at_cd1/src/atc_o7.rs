@@ -1,8 +1,184 @@
 use proconio::{ input, fastout };
-use std::collections::{ HashMap };
+use std::collections::{ HashMap, HashSet };
+use itertools::Itertools;
 
 fn main() {
-    to3_2();
+    ipfl();
+}
+
+#[allow(dead_code)]
+fn ipfl() {
+    input! {
+        n: usize,
+        s: String,
+        q: usize,
+        tab_vec: [(usize, usize, usize); q],
+    }
+    let mut s_vec: Vec<char> = s.chars().collect();
+    s_vec.insert(0, 'x');
+
+    let mut is_flip: bool = false; // 反転しているかどうか
+    for (t, a, b) in tab_vec {
+        if t == 1 {
+            let a_ind;
+            let b_ind;
+            if is_flip {
+                if a <= n {
+                    a_ind = a + n;
+                } else {
+                    a_ind = a - n;
+                }
+                if b <= n {
+                    b_ind = b + n;
+                } else {
+                    b_ind = b - n;
+                }
+            } else {
+                a_ind = a;
+                b_ind = b;
+            }
+            s_vec.swap(a_ind, b_ind);
+        } else {
+            if is_flip {
+                is_flip = false;
+            } else {
+                is_flip = true;
+            }
+        }
+    }
+
+    let s_left: String = s_vec[1..=n].iter().map(|c| c.to_string()).collect();
+    let s_rigth: String = s_vec[n+1..=2*n].iter().map(|c| c.to_string()).collect();
+    let ans: String;
+    if is_flip {
+        ans = s_rigth + &s_left;
+    } else {
+        ans = s_left + &s_rigth;
+    }
+    println!("{}", ans);
+
+    // if is_flip {
+    //     let mut flip_vec: Vec<char> = Vec::new();
+    //     for i in n+1..=2*n {
+    //         flip_vec.push(s_vec[i]);
+    //     }
+    //     for i in 1..=n {
+    //         flip_vec.push(s_vec[i]);
+    //     }
+    //     let ans: String = flip_vec.iter().collect();
+    //     println!("{}", ans);
+    // } else {
+    //     let ans: String = s_vec.iter().skip(1).collect();
+    //     println!("{}", ans);
+    // }
+}
+
+#[allow(dead_code)]
+fn walking_takahashi() {
+    input! {
+        x: isize, k: isize, d: isize,
+    }
+    let x_abs = x.abs();
+    // if x_abs - d * k >= 0 {
+    if x_abs / k - d >= 0 {
+        println!("{}", x_abs - d * k);
+    } else {
+        // 0を飛び越える直前
+        let j_bef = x_abs - (x_abs / d) * d;
+        // 0を飛び超えた直前 座標
+        let j_af = j_bef - d;
+        // 残りの回数
+        let rem_k = k - x_abs / d;
+
+        if rem_k % 2 == 0 {
+            println!("{}", j_bef.abs());
+        } else {
+            println!("{}", j_af.abs());
+        }
+    }
+}
+
+
+
+#[allow(dead_code)]
+fn wa_sum_pairs() {
+    input! {
+        n: usize,
+        a_vec: [usize; n],
+    }
+
+    const MOD: usize = 1000000007;
+    let mut a_sum: usize = a_vec.iter().sum();
+
+    let mut ans = 0;
+    for i in 0..n {
+        a_sum -= a_vec[i];
+        ans += (a_vec[i] * a_sum) % MOD;
+        // println!("{} x {}", a_vec[i], a_sum);
+    }
+    println!("{}", ans % MOD);
+}
+
+#[allow(dead_code)]
+fn unexpressed() {
+    input! {
+        n: usize,
+    }
+    let lim = (n as f64).sqrt() as usize;
+    let mut able_set: HashSet<usize> = HashSet::new();
+    for a in 2..=lim {
+    // for a in 2..=n {
+        let mut x = a * a;
+        while x <= n {
+            able_set.insert(x);
+            x *= a;
+        }
+    }
+    println!("{}", n - able_set.len());
+}
+
+
+#[allow(dead_code)]
+fn over_unexpressed() {
+    input! {
+        n: usize,
+    }
+    let mut able_set: HashSet<usize> = HashSet::new();
+    for a in 2..=10_usize.pow(5) {
+        for b in 2..=33 {
+            if a.pow(b) <= n {
+                able_set.insert(a.pow(b));
+            }
+        }
+    }
+    println!("{}", n - able_set.len());
+}
+
+#[allow(dead_code)]
+fn travel() {
+    input! {
+        n: usize, k: usize,
+        t_vec: [[usize; n]; n],
+    }
+    let perm_vec: Vec<usize> = (0..n).collect();
+    let mut cnt = 0;
+    for perm in perm_vec.iter().permutations(n) {
+        let mut sum = 0;
+        for i in 0..n-1 {
+            if *perm[0] != 0 { continue; } 
+            // println!("{:?}", perm);
+            let now = *perm[i];
+            let to = *perm[i+1];
+            sum += t_vec[now][to];
+        }
+        let last = *perm[n-1];
+        sum += t_vec[last][0]; // 都市1に戻る
+        // println!("{}", sum);
+        if k == sum {
+            cnt += 1;
+        }
+    }
+    println!("{}", cnt);
 }
 
 #[allow(dead_code)]
