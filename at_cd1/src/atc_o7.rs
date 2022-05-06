@@ -3,7 +3,33 @@ use std::collections::{ HashMap, HashSet };
 use itertools::Itertools;
 
 fn main() {
-    ipfl();
+    many_oranges();
+}
+
+#[allow(dead_code)]
+fn many_oranges() {
+    input! {
+        a: usize, b: usize, w :usize,
+    }
+    let wg: usize = 1000 * w;
+    let mut min_ans: usize = std::usize::MAX;
+    let mut max_ans: usize = std::usize::MIN;
+    // println!("{} {}", min_ans, max_ans);
+    for x in 1..=10_usize.pow(6) {
+        // 【A * みかんの個数x <= W <= B * みかんの個数x】 に入っていれば、みかんの重さは少数もありえるため、
+        // 合計した重さがWになる可能性があるということ？
+        // println!("x {} {} {}", x, a * x, b * x);
+        if a * x <= wg && wg <= b * x {
+            // println!("{} {} {}", x, a * x, b * x);
+            min_ans = min_ans.min(x);
+            max_ans = max_ans.max(x);
+        }
+    }
+    if min_ans == std::usize::MAX {
+        println!("UNSATISFIABLE");
+    } else {
+        println!("{} {}", min_ans, max_ans);
+    }
 }
 
 #[allow(dead_code)]
