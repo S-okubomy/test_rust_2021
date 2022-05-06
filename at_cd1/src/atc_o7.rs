@@ -1,9 +1,30 @@
 use proconio::{ input, fastout };
 use std::collections::{ HashMap, HashSet };
 use itertools::Itertools;
+use std::cmp::{ min, max };
 
 fn main() {
-    skill_up();
+    frog1();
+}
+
+#[allow(dead_code)]
+fn frog1() {
+    input! {
+        n: usize,
+        h_vec: [isize; n],
+    }
+
+    let mut dp: Vec<isize> = vec![0; n];
+    dp[0] = 0;
+    for i in 1..n {
+        if i == 1 {
+            dp[i] = dp[i-1] + (h_vec[i] - h_vec[i-1]).abs();
+        } else {
+            dp[i] = min(dp[i-1] + (h_vec[i] - h_vec[i-1]).abs(), dp[i-2] + (h_vec[i] - h_vec[i-2]).abs());
+        }
+    }
+    // println!("{:?}", dp);
+    println!("{}", dp[n-1]);
 }
 
 #[allow(dead_code)]
