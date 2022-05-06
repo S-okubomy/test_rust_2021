@@ -3,7 +3,96 @@ use std::collections::{ HashMap, HashSet };
 use itertools::Itertools;
 
 fn main() {
-    many_oranges();
+    skill_up();
+}
+
+#[allow(dead_code)]
+fn skill_up() {
+    input! {
+        n: usize, m: usize, x: usize,
+        ca_vec: [[usize; m+1]; n],
+    }
+
+    let mut c_sum_min = std::usize::MAX;
+    for bit in 0..(1<<n) {
+        // println!("{:08b}", bit);
+        let mut c_sum = 0;
+        for i in 0..n {
+            if (bit & 1 << i) != 0 {
+                c_sum += ca_vec[i][0];
+            }    
+        }
+        let mut is_low: bool = false;
+        for j in 1..=m {
+            let mut x_sum = 0;
+            for i in 0..n {
+                if (bit & 1 << i) != 0 {
+                    x_sum += ca_vec[i][j];
+                }    
+            }
+            if x_sum < x {
+                is_low = true;
+                break;
+            } 
+        }
+        // println!("{}", c_sum);
+        if !is_low {
+            c_sum_min = c_sum_min.min(c_sum);
+        }
+    }
+    if c_sum_min == std::usize::MAX {
+        println!("-1")
+    } else {
+        println!("{}", c_sum_min);
+    }
+}
+
+#[allow(dead_code)]
+fn mandarin_orange() {
+    input! {
+        n: usize,
+        a_vec: [usize; n],
+    }
+
+    let mut x_min;
+    let mut sum_max = std::usize::MIN;
+    for l in 0..n {
+        x_min = a_vec[l];
+        for r in l..n {
+            x_min = x_min.min(a_vec[r]);
+            sum_max = sum_max.max(x_min * (r-l+1));
+        }
+    }
+    println!("{}", sum_max);
+}
+
+#[allow(dead_code)]
+fn dice_in_line() {
+    input! {
+        n: usize, k: usize,
+        p_vec: [f64; n],
+    }
+
+    // 期待値の累積和を求める
+    let mut b_vec: Vec<f64> = vec![0.0; n+1];
+    for i in 1..=n {
+        b_vec[i] = b_vec[i-1] + get_exp(p_vec[i-1]);
+    }
+    // println!("{:?}", b_vec);
+    let mut max_exp: f64 = 0.0;
+    for i in k..=n {
+        let exp: f64 = b_vec[i] - b_vec[i-k];
+        max_exp = max_exp.max(exp);
+    }
+    println!("{}", max_exp);
+}
+
+fn get_exp(x: f64) -> f64 {
+    let mut exp: f64 = 0_f64;
+    for i in 1..=(x as usize) {
+        exp += i as f64;
+    }
+    exp / x
 }
 
 #[allow(dead_code)]
