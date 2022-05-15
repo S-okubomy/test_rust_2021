@@ -1,10 +1,157 @@
 use proconio::{ input, fastout };
-use std::collections::{ HashMap, HashSet };
+use std::collections::{ HashMap, HashSet, VecDeque };
 use itertools::Itertools;
 use std::cmp::{ min, max };
 
 fn main() {
-    frog1();
+    h_and_v();
+}
+
+#[allow(dead_code)]
+fn h_and_v() {
+    input! {
+        h: usize, w: usize, k: usize,
+        c_vec: [String; h],
+    }
+    let c_char_vec: Vec<Vec<char>> = c_vec.iter().map(|s| s.chars().collect()).collect();
+    // println!("{:?}", c_char_vec);
+
+    let mut cnt = 0;
+    for red_row in 0..1<<h {
+        for red_col in 0..1<<w {
+            println!("{:08b} {:08b}", red_row, red_col);
+            let mut bk_cnt = 0;
+            for i in 0..h {
+                for j in 0..w {
+                    if red_row & (1 << i) == 0 && red_col & (1 << j) == 0 {
+                        if '#' == c_char_vec[i][j] {
+                            bk_cnt += 1;
+                        }
+                    }
+                }
+            }
+            // println!("{}", bk_cnt);
+            if k == bk_cnt {
+                cnt += 1;
+            }
+        }
+    }
+    println!("{}", cnt);
+}
+
+#[allow(dead_code)]
+fn tour() {
+    input! {
+        n: usize, m: usize,
+        ab_vec: [(usize, usize); m],
+    }
+    let mut nb_ab: Vec<Vec<usize>> = vec![vec![]; n+1];
+    for (a, b) in ab_vec {
+        nb_ab[a].push(b);
+        // nb_ab[b].push(a);
+    }
+    println!("{:?}", nb_ab);
+
+    let mut sum_cnt = 0;
+    for start in 1..=n {
+        sum_cnt += bfs1(start, n, &nb_ab);
+    }
+    println!("{}", sum_cnt);
+}
+
+fn bfs1(start: usize, n: usize, connect: &Vec<Vec<usize>>) -> usize {
+    let mut deque: VecDeque<usize> = VecDeque::new();
+    deque.push_back(start);
+    let mut dist: Vec<isize> = vec![-1; n+1];
+    dist[start] = 1;
+    let mut cnt = 1;
+    while deque.len() > 0 {
+        let pos: usize = deque.pop_front().unwrap();
+        for nb in &connect[pos] {
+            if dist[*nb] == -1 {
+                deque.push_back(*nb);
+                dist[*nb] = dist[pos] + 1;
+                cnt += 1;
+            }
+        }
+    }
+    println!("st: {} {}", start, cnt);
+    cnt
+}
+
+#[allow(dead_code)]
+fn string_formation() {
+    input! {
+        s: String,
+        q: usize,
+    }
+    let deque: VecDeque<char> = s.chars().collect();
+    let mut l_deque: VecDeque<char> = VecDeque::new();
+    let mut r_deque: VecDeque<char> = VecDeque::new();
+    let mut is_flip: bool = false;
+    for _i in 0..q {
+        input!{ t: char, }
+        if t == '2' {
+            input! { f: char, c: char, }
+            if is_flip {
+                if f == '1' {
+                    r_deque.push_back(c);
+                } else {
+                    l_deque.push_front(c);
+                }
+            } else {
+                if f == '1' {
+                    l_deque.push_front(c);
+                } else {
+                    r_deque.push_back(c);
+                }
+            }
+        } else {
+            if is_flip {
+                is_flip = false;
+            } else {
+                is_flip = true;
+            }
+        }
+    }
+    let l: String = l_deque.iter().collect();
+    let r: String = r_deque.iter().collect(); 
+    let m: String = deque.iter().collect();
+
+    println!("{} {} {}", l, r, m);
+    let mut ans_string: String;
+    if is_flip {
+        ans_string = l + &m + &r;
+        ans_string = ans_string.chars().map(|c| c.to_string()).rev().collect();
+    } else {
+        ans_string = l + &m + &r;
+    }
+    println!("{}", ans_string);
+}
+
+fn tle_string_formation() {
+    input! {
+        s: String,
+        q: usize,
+    }
+
+    let mut deque: VecDeque<char> = s.chars().collect();
+    for _i in 0..q {
+        input! { t: char, }
+
+        if t == '2' {
+            input! { f: char, c: char, }
+            if f == '1' {
+                deque.push_front(c);
+            } else {
+                deque.push_back(c);
+            }
+        } else {
+            deque = deque.iter().map(|c| *c).rev().collect();
+        }
+    }
+    let ans: String = deque.iter().collect();
+    println!("{}", ans);
 }
 
 #[allow(dead_code)]
