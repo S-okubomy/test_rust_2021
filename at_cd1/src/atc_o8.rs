@@ -1,7 +1,52 @@
 use proconio::{ input, fastout };
 
 fn main() {
-    staircase_sequences();
+    friends();
+}
+
+#[allow(dead_code)]
+fn friends() {
+    input! {
+        n: usize, m: usize,
+        ab_vec: [(isize, isize); m],
+    }
+
+    let mut parent: Vec<isize> = vec![-1; n];
+    for (a, b) in ab_vec {
+        unite(&mut parent, a-1, b-1);
+    }
+
+    let mut cnt = 0;
+    for i in 0..n {
+        cnt = cnt.max(size_u(&parent, i as isize));
+    }
+    // println!("{:?}", parent);
+    println!("{}", cnt);
+}
+
+fn size_u(parent: &Vec<isize>, x: isize) -> isize {
+    -parent[root(parent, x) as usize]
+}
+
+fn unite(parent: &mut Vec<isize>, mut x: isize, mut y: isize) -> bool {
+    x = root(parent, x);
+    y = root(parent, y);
+    if x == y {
+        return false;
+    }
+    if parent[x as usize] > parent[y as usize] {
+        std::mem::swap(&mut x, &mut y);
+    }
+    parent[x as usize] += parent[y as usize];
+    parent[y as usize] = x;
+    true
+}
+
+fn root(parent: &Vec<isize>, x: isize) -> isize {
+    if parent[x as usize] < 0 {
+        return x;
+    }
+    root(parent, parent[x as usize])
 }
 
 #[allow(dead_code)]
