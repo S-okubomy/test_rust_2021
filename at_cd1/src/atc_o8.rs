@@ -1,7 +1,62 @@
 use proconio::{ input, fastout };
 
 fn main() {
-    friends();
+    union_find();
+}
+
+fn union_find() {
+    input! {
+        n: usize, q: usize,
+        pab_vec: [(usize, usize, usize); q],
+    }
+    let mut uni: UnionFind = UnionFind::new(n);
+    for (p, a, b) in pab_vec {
+        if p == 0 {
+            uni.unite(a, b);
+        } else {
+            if uni.is_same(a, b) {
+                println!("Yes");
+            } else {
+                println!("No");
+            }
+        }
+    }
+}
+
+struct UnionFind {
+    parent: Vec<usize>,
+}
+
+impl UnionFind {
+    fn new(n: usize) -> Self {
+        let mut parent: Vec<usize> = vec![0; n];
+        for i in 0..n {
+            parent[i] = i; // 最初は全てが根であるとして初期化
+        }
+        Self { parent }
+    }
+
+    fn root(&self, x: usize) -> usize {
+        if self.parent[x] == x {
+            return x;
+        }
+        self.root(self.parent[x])
+    }
+
+    fn unite(&mut self, a: usize, b: usize) {
+        let r_a = self.root(a);
+        let r_b = self.root(b);
+        if r_a == r_b {
+            return;
+        }
+        self.parent[r_a] = r_b; // aの根r_aをbの根r_bにつける
+    }
+
+    fn is_same(&self, a: usize, b: usize) -> bool {
+        let r_a = self.root(a);
+        let r_b = self.root(b);
+        r_a == r_b
+    }
 }
 
 #[allow(dead_code)]
