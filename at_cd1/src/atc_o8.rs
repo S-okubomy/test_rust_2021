@@ -1,7 +1,88 @@
 use proconio::{ input, fastout };
+use std::collections::{ HashSet };
 
 fn main() {
-    union_find();
+    div_game();
+}
+
+#[allow(dead_code)]
+fn div_game() {
+    input! {
+        mut n: usize,
+    }
+
+    if n == 1 {
+        println!("0");
+        return;
+    }
+    // println!("{:?}", get_prime_vec(n));
+    let prime_set: HashSet<usize> = get_prime_vec(n).into_iter().collect();
+    let mut cnt = 0;
+    for p in prime_set {
+        for e in 1..=10_usize.pow(10) {
+            if n % p.pow(e as u32) == 0{
+                cnt += 1;
+                n /= p.pow(e as u32);
+            } else {
+                break;
+            }
+        }
+    }
+    println!("{}", cnt);
+}
+
+fn get_prime_vec(mut n: usize) -> Vec<usize> {
+    let mut prime_vec: Vec<usize> = Vec::new();
+    if n == 1 {
+        prime_vec.push(1);
+        return prime_vec;
+    }
+    let mut i = 2;
+    while i * i <= n {
+        if n % i == 0 {
+            prime_vec.push(i);
+            n /= i;
+            // println!("{} {}", n, i);
+        } else {
+            i += 1;
+        }
+    }
+    if n != 1 {
+        prime_vec.push(n);
+    }
+    prime_vec
+}
+
+#[allow(dead_code)]
+fn wa_div_game() {
+    input! {
+        n: usize,
+    }
+    let mut prime_vec: Vec<(usize, usize)> = Vec::new();
+    let lim: usize = (n as f64).sqrt() as usize;
+    for i in 2..=lim {
+        if n % i == 0 {
+            let mut e = 0;
+            let mut cur_n = n;
+            while cur_n % i == 0 {
+                cur_n /= i;
+                e += 1;
+            }
+            prime_vec.push((i, e));
+        }
+    }
+    let mut cnt = 0;
+    for (p, e) in prime_vec {
+        let mut res = 1;
+        while (res + 1) * (res + 2) / 2 <= e {
+            res += 1;
+        }
+        cnt += res;
+    }
+    if n !=1 {
+        cnt += 1;
+    }
+    println!("{}", cnt);
 }
 
 fn union_find() {
