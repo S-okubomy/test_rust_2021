@@ -6,6 +6,15 @@ fn main() {
 }
 
 #[allow(dead_code)]
+fn teleporter() {
+    input! {
+        n: usize, k: usize,
+        a_vec: [usize; n],
+    }
+    
+}
+
+#[allow(dead_code)]
 fn buy_an_integer() {
     input! {
         a:u64, b: u64, x: u64,
