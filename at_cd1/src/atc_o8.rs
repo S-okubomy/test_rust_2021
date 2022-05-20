@@ -2,16 +2,41 @@ use proconio::{ input, fastout };
 use std::collections::{ HashSet };
 
 fn main() {
-    tle_buy_an_integer();
+    teleporter();
 }
 
 #[allow(dead_code)]
 fn teleporter() {
     input! {
-        n: usize, k: usize,
-        a_vec: [usize; n],
+        n: usize, mut k: isize,
+        mut a_vec: [isize; n],
     }
-    
+    a_vec.insert(0, 0);
+    let mut visited_vec: Vec<isize> = vec![-1; n+1];
+    visited_vec[1] = 0;
+    let mut now_town = 1;
+    let mut move_cnt: isize = 0;
+    let mut cycle: isize = 0;
+    for i in 0..=1_000_000 {
+        move_cnt += 1;
+        now_town = a_vec[now_town as usize];
+        if move_cnt == k {
+            println!("{}", now_town);
+            return;
+        }
+        if visited_vec[now_town as usize] == -1 {
+            visited_vec[now_town as usize] = move_cnt;
+        } else {
+            cycle = move_cnt - visited_vec[now_town as usize];
+            break;
+        }
+    }
+    k -= move_cnt;
+    k %= cycle;
+    for i in 0..k {
+        now_town = a_vec[now_town as usize];
+    }
+    println!("{}", now_town);
 }
 
 #[allow(dead_code)]
