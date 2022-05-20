@@ -2,7 +2,48 @@ use proconio::{ input, fastout };
 use std::collections::{ HashSet };
 
 fn main() {
-    div_game();
+    tle_buy_an_integer();
+}
+
+#[allow(dead_code)]
+fn buy_an_integer() {
+    input! {
+        a:u64, b: u64, x: u64,
+    }
+    let mut left: u64 = 0;
+    let mut right: u64 = 1000_000_001;
+    while 1 < right - left {
+        let mid = (left + right) / 2;
+        if check(a, b, mid) <= x {
+            left = mid;
+        } else {
+            right = mid;
+        }
+    }
+    println!("{}", left); 
+}
+
+fn check(a: u64, b: u64, x: u64) -> u64 {
+    let dig_x: u64 = x.to_string().len() as u64;
+    a * x + b * dig_x
+}
+
+
+#[allow(dead_code)]
+fn tle_buy_an_integer() {
+    input! {
+        a:usize, b: usize, x: usize,
+    }
+    for i in 1..=1_000_000_000 {
+        if a * i + b * get_dig(i.to_string()) > x {
+            println!("{}", i-1);
+            return;
+        }
+    }
+}
+
+fn get_dig(s: String) -> usize {
+    s.len()
 }
 
 #[allow(dead_code)]
