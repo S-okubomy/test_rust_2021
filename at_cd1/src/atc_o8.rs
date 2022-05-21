@@ -1,8 +1,41 @@
 use proconio::{ input, fastout };
-use std::collections::{ HashSet };
+use std::collections::{ HashSet, VecDeque };
 
 fn main() {
-    teleporter();
+    double_dots();
+}
+
+#[allow(dead_code)]
+fn double_dots() {
+    input! {
+        n: usize, m: usize,
+        ab_vec: [(usize, usize); m],
+    }
+    let mut connect: Vec<Vec<usize>> = vec![vec![]; n+1];
+    for (a, b) in ab_vec {
+        connect[a].push(b);
+        connect[b].push(a);
+    }
+    // println!("{:?}", connect);
+    let mut deque: VecDeque<usize> = VecDeque::new();
+    deque.push_back(1);
+    let mut visit_vec: Vec<bool> = vec![false; n+1];
+    let mut ans_vec: Vec<usize> = vec![0; n+1];
+    while deque.len() > 0 {
+        let pos = deque.pop_front().unwrap();
+        for c in &connect[pos] {
+            if !visit_vec[*c] {
+                deque.push_back(*c);
+                visit_vec[*c] = true;
+                ans_vec[*c] = pos; 
+            }
+        }
+    }
+
+    println!("Yes");
+    for i in 2..=n {
+        println!("{}", ans_vec[i]);
+    }
 }
 
 #[allow(dead_code)]
