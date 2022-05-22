@@ -2,7 +2,43 @@ use proconio::{ input, fastout };
 use std::collections::{ HashSet, VecDeque };
 
 fn main() {
-    double_dots();
+    orxor();
+}
+
+#[allow(dead_code)]
+fn orxor() {
+    input! {
+        n: usize,
+        a_vec: [usize; n],
+    }
+    // println!("{:08b}", 7);
+    let mut xor_val: usize = 2_usize.pow(40);
+    for bit in 0..1<<n+1 {
+        if bit & 1 == 0 || bit>>n & 1 == 0 {
+            continue;
+        } 
+        let mut parts_vec: Vec<usize> = Vec::new();
+        for i in 0..n+1 {
+            if (bit & 1<<i) != 0 {
+                parts_vec.push(i);
+            } 
+        }
+        // println!("{:?}", parts_vec);
+        let mut tmp_xor_val = 0;
+        for j in 0..parts_vec.len()-1 {
+            tmp_xor_val = tmp_xor_val^calc_or(&a_vec, parts_vec[j], parts_vec[j+1]);
+        }
+        xor_val = xor_val.min(tmp_xor_val);
+    }
+    println!("{}", xor_val);
+}
+
+fn calc_or(a_vec: &Vec<usize>, left: usize, right: usize) -> usize {
+    let mut or_val = 0;
+    for i in left..right {
+        or_val |= a_vec[i];
+    }
+    or_val
 }
 
 #[allow(dead_code)]
