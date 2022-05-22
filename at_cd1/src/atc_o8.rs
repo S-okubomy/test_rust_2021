@@ -1,8 +1,25 @@
 use proconio::{ input, fastout };
-use std::collections::{ HashSet, VecDeque };
+use std::collections::{ HashSet, VecDeque, BinaryHeap };
 
 fn main() {
-    orxor();
+    p_discount_tickets();
+}
+
+#[allow(dead_code)]
+fn p_discount_tickets() {
+    input!{
+        n: usize, m: usize,
+        a_vec: [usize; n],
+    }
+
+    let mut q: BinaryHeap<usize> = a_vec.into_iter().collect();
+    for i in 0..m {
+        let mut x: usize = q.pop().unwrap(); // get max val
+        x /= 2;
+        q.push(x);
+    }
+    let ans: usize = q.iter().sum(); 
+    println!("{}", ans);
 }
 
 #[allow(dead_code)]
