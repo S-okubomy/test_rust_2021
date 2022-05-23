@@ -1,8 +1,36 @@
 use proconio::{ input, fastout };
 use std::collections::{ HashSet, VecDeque, BinaryHeap };
+use std::f64::consts::PI;
 
 fn main() {
-    p_discount_tickets();
+    redistribution();
+}
+
+#[allow(dead_code)]
+fn redistribution() {
+    input! {
+        s: usize,
+    }
+}
+
+#[allow(dead_code)]
+fn opposite() {
+    input! {
+        n: f64,
+        mut x0: f64, mut y0: f64,
+        xn2: f64, yn2: f64,
+    }
+
+    let (c_x, c_y) = ((x0+xn2)/2_f64, (y0+yn2)/2_f64);
+
+    x0 -= c_x;
+    y0 -= c_y;
+
+    let mut x1 = x0*(2_f64*PI/n).cos() - y0*(2_f64*PI/n).sin();
+    let mut y1 = x0*(2_f64*PI/n).sin() + y0*(2_f64*PI/n).cos();
+    x1 += c_x;
+    y1 += c_y;
+    println!("{} {}", x1, y1);
 }
 
 #[allow(dead_code)]
