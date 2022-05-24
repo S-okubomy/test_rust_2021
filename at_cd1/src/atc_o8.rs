@@ -3,7 +3,17 @@ use std::collections::{ HashSet, VecDeque, BinaryHeap };
 use std::f64::consts::PI;
 
 fn main() {
-    redistribution();
+    k_napsack1();
+}
+
+#[allow(dead_code)]
+fn k_napsack1() {
+    input! {
+        n: usize, w: usize,
+        wv_vec: [(usize, usize); n],
+    }
+
+
 }
 
 #[allow(dead_code)]
@@ -11,6 +21,15 @@ fn redistribution() {
     input! {
         s: usize,
     }
+    const MOD: usize = 1000_000_007;
+    let mut dp: Vec<usize> = vec![0; s+1];
+    let mut sum = 0;
+    for i in 3..=s {
+        sum += dp[i-3];
+        dp[i] = (sum + 1) % MOD;
+    }
+    // println!("{:?}", dp);        
+    println!("{}", dp[s]);
 }
 
 #[allow(dead_code)]
