@@ -1,19 +1,43 @@
 use proconio::{ input, fastout };
 use std::collections::{ HashSet, VecDeque, BinaryHeap };
 use std::f64::consts::PI;
+use std::cmp::{ min, max };
 
 fn main() {
-    k_napsack1();
+    repsept();
+}
+
+#[allow(dead_code)]
+fn repsept() {
+    input! {
+        k: usize,
+    }
+
 }
 
 #[allow(dead_code)]
 fn k_napsack1() {
     input! {
         n: usize, w: usize,
-        wv_vec: [(usize, usize); n],
+        mut wv_vec: [(usize, usize); n],
     }
+    wv_vec.insert(0, (0, 0));
 
-
+    // dp[i][wg]: iまでの品物を使って重さwgまでの荷物を入れた時の最大価値
+    let mut dp: Vec<Vec<usize>> = vec![vec![0; w+1]; n+1];
+    dp[0][0] = 0;
+    for i in 1..=n {
+        let (weight, val) = wv_vec[i];
+        for wg in 0..=w {
+            if wg >= weight {
+                dp[i][wg] = max(dp[i-1][wg], dp[i-1][wg-weight] + val); 
+            } else {
+                dp[i][wg] = dp[i-1][wg];
+            }
+        }
+    }
+    // println!("{:?}", dp);
+    println!("{}", dp[n][w]);
 }
 
 #[allow(dead_code)]
