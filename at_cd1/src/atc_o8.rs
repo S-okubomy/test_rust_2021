@@ -13,6 +13,16 @@ fn repsept() {
         k: usize,
     }
 
+    let mut amari = 0;
+    for i in 1..=k {
+        amari = amari * 10 + 7;
+        if amari % k == 0 {
+            println!("{}", i);
+            return;
+        }
+        amari %= k;
+    }
+    println!("-1");
 }
 
 #[allow(dead_code)]
