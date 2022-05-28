@@ -11,6 +11,7 @@ proconio = { version = "=0.4.3", features = ["derive"] }
 cli_test_dir = "0.1.7"
 primal = "0.2"
 itertools = "0.10.3"
+num = "0.4.0"
 
 [[bin]]
 name = "main"

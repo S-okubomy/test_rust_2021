@@ -2,10 +2,54 @@ use proconio::{ input, fastout };
 use std::collections::{ HashSet, VecDeque, BinaryHeap };
 use std::f64::consts::PI;
 use std::cmp::{ min, max };
+use num::{ Zero, One };
+use std::ops::{ MulAssign, RemAssign };
 
 fn main() {
-    maze_master();
+    bouquet();
 }
+
+#[allow(dead_code)]
+fn bouquet() {
+    input! {
+        n: usize, a: usize, b: usize,
+    }
+    const MOD: usize = 1_000_000_007;
+    let mut ans = pow_mod(2, n, MOD) -1;
+    ans = (ans + MOD - n_c_r(n, a, MOD)) % MOD;
+    ans = (ans + MOD - n_c_r(n, b, MOD)) % MOD;
+    println!("{}", ans);
+}
+
+fn n_c_r(n: usize, r: usize, _mod: usize) -> usize {
+    let mut x = 1;
+    let mut y = 1;
+    for i in 1..=r {
+        x *= n - i + 1; x %= _mod;
+        y *= i; y %= _mod;
+    }
+    // nCr = x/y → x * 「分母の逆元」
+    // 逆元計算方法
+    // https://qiita.com/drken/items/6b4031ccbb2cab7436f3#4-1-%E9%80%86%E5%85%83%E3%82%92%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B
+    x * pow_mod(y, _mod-2, _mod) % _mod
+} 
+
+// 繰り返し２乗法
+fn pow_mod <T> (mut x:T, mut n:usize, _mod: T) -> T  //x^n
+    where T: Copy + Zero + One + MulAssign + RemAssign,
+{
+    let mut res = T::one();
+    while n > 0 {
+        if n & 1 == 1 { // nを2進数で表した時の2^iの位が1の時に限り、x^2iが積に含まれる
+            res *= x; res %= _mod;
+        }
+        x *= x; //一周する度にx, x^2, x^4, x^8となる
+        x %= _mod;
+        n /= 2; //桁をずらす n = n >> 1
+    }
+    res
+}
+
 
 #[allow(dead_code)]
 fn maze_master() {
