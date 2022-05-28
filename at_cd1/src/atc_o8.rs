@@ -4,7 +4,89 @@ use std::f64::consts::PI;
 use std::cmp::{ min, max };
 
 fn main() {
-    repsept();
+    maze_master();
+}
+
+#[allow(dead_code)]
+fn maze_master() {
+    input! {
+        h: isize, w: isize,
+        s: [String; h],
+    }
+
+    let map: Vec<Vec<char>> = s.iter().map(|s| s.chars().collect()).collect();
+    let mut cnt = 0;
+    for row in 0..h {
+        for col in 0..w {
+            if map[row as usize][col as usize] == '.' {
+                cnt = max(cnt, get_bfs_max_cnt(w, h, row, col, &map));
+            }
+        }
+    }
+    println!("{}", cnt);
+}
+
+fn get_bfs_max_cnt(w: isize, h: isize, start_row: isize, start_col: isize, map: &Vec<Vec<char>>) -> isize {
+    let dxy = vec![(0, 1), (0, -1), (1, 0), (-1, 0)];
+    let mut map_cnt = vec![vec![-1; w as usize]; h as usize];
+    map_cnt[start_row as usize][start_col as usize] = 0;
+    let mut deque: VecDeque<(isize, isize)> = VecDeque::new();
+    deque.push_back((start_row, start_col));
+    while deque.len() > 0 {
+        let (now_row, now_col) = deque.pop_front().unwrap();
+        // println!("{} {}", now_x, now_y);
+        let now_cnt = map_cnt[now_row as usize][now_col as usize];
+        for (dx, dy) in &dxy {
+            let next_row = now_row + dy;
+            let next_col = now_col + dx;
+            if (0 <= next_col && next_col < w) && (0 <= next_row && next_row < h) {
+                if map[next_row as usize][next_col as usize] == '.' && map_cnt[next_row as usize][next_col as usize] == -1 {
+                    map_cnt[next_row as usize][next_col as usize] = now_cnt + 1;
+                    deque.push_back((next_row, next_col));
+                }
+            }
+        }
+        
+    }
+    let mut max_cnt = 0;
+    for row in 0..h {
+        for col in 0..w {
+            max_cnt = max(max_cnt, map_cnt[row as usize][col as usize]);
+        }
+    }
+    max_cnt
+}
+
+fn un_get_bfs_max_cnt(w: isize, h: isize, start_row: isize, start_col: isize, map: &Vec<Vec<char>>) -> isize {
+    let dxy = vec![(0, 1), (0, -1), (1, 0), (-1, 0)];
+    let mut map_cnt = vec![vec![-1; w as usize]; h as usize];
+    map_cnt[start_row as usize][start_col as usize] = 0;
+    let mut deque: VecDeque<(isize, isize)> = VecDeque::new();
+    deque.push_back((start_col, start_row));
+    while deque.len() > 0 {
+        let (now_x, now_y) = deque.pop_front().unwrap();
+        // println!("{} {}", now_x, now_y);
+        let now_cnt = map_cnt[now_y as usize][now_x as usize];
+        for (dx, dy) in &dxy {
+            let x = now_x + dx;
+            let y = now_y + dy;
+            if (0 <= x && x < w) && (0 <= y && y < h) {
+                println!("{} {}", y, h);
+                if map[y as usize][x as usize] == '.' && map_cnt[y as usize][x as usize] == -1 {
+                    map_cnt[y as usize][x as usize] = now_cnt + 1;
+                    deque.push_back((x, y));
+                }
+            }
+        }
+        
+    }
+    let mut max_cnt = 0;
+    for row in 0..h {
+        for col in 0..w {
+            max_cnt = max(max_cnt, map_cnt[row as usize][col as usize]);
+        }
+    }
+    max_cnt
 }
 
 #[allow(dead_code)]
