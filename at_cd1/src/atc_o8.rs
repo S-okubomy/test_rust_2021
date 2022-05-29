@@ -6,7 +6,49 @@ use num::{ Zero, One };
 use std::ops::{ MulAssign, RemAssign };
 
 fn main() {
-    bouquet();
+    crested_ibis_vs_monster2();
+}
+
+#[allow(dead_code)]
+fn crested_ibis_vs_monster2() {
+    input! {
+        h: usize, n: usize,
+        mut ab_vec: [(usize, usize); n],
+    }
+    // dp[j]: ダメージ jを与える最小の魔法消費量．dp[h]のみダメージ量がh以上
+    let mut dp: Vec<usize> = vec![10_000_000_000; h+1];
+    dp[0] = 0;
+    for i in 0..n {
+        let (a, b) = ab_vec[i];
+        for j in 0..=h {
+            // j+a <= h の時は、dp[j+a] に設定
+            // j+a > hの時は、dp[h] に設定
+            dp[min(j+a, h)] = min(dp[min(j+a, h)], dp[j] +b);
+        }
+    }
+    println!("{}", dp[h]);
+}
+
+#[allow(dead_code)]
+fn crested_ibis_vs_monster() {
+    input! {
+        h: usize, n: usize,
+        mut ab_vec: [(usize, usize); n],
+    }
+    // dp[j]: ダメージ jを与える最小の魔法消費量．dp[h]のみダメージ量がh以上
+    let mut dp: Vec<usize> = vec![10_000_000_000; h+1];
+    dp[0] = 0;
+    for i in 0..n {
+        let (a, b) = ab_vec[i];
+        for j in 0..=h {
+            if j + a <= h {
+                dp[j+a] = min(dp[j+a], dp[j] + b);
+            } else {
+                dp[h] = min(dp[h], dp[j] + b);
+            }
+        }
+    }
+    println!("{}", dp[h]);
 }
 
 #[allow(dead_code)]

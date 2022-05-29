@@ -18,9 +18,9 @@ name = "main"
 path = "src/main.rs"
 
 [[bin]]
-name = "atc_o7"
-path = "src/atc_o7.rs"
-
-[[bin]]
 name = "atc_o8"
 path = "src/atc_o8.rs"
+
+[[bin]]
+name = "atc_o9"
+path = "src/atc_o9.rs"
