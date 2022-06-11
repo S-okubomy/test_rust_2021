@@ -1,7 +1,26 @@
 use proconio::{ input };
 
 fn main() {
-    rotate();
+    orthogonality();
+}
+
+#[allow(dead_code)]
+fn orthogonality() {
+    input! {
+        n: usize,
+        a_vec: [isize; n],
+        b_vec: [isize; n],
+    }
+    let mut naiseki = 0;
+    for i in 0..n {
+        naiseki += a_vec[i] * b_vec[i];
+    }
+
+    if naiseki == 0 {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
 }
 
 #[allow(dead_code)]
