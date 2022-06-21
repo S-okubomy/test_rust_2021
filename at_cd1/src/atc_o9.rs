@@ -1,7 +1,17 @@
 use proconio::{ input };
 
 fn main() {
-    rotate();
+    remove_it();
+}
+
+#[allow(dead_code)]
+fn remove_it() {
+    input! {
+        n: usize, x: usize,
+        a_vec: [usize; n],
+    }
+    let s_vec: Vec<String> = a_vec.into_iter().filter(|a| { *a != x }).map(|a| a.to_string()).collect::<Vec<String>>();
+    println!("{}", s_vec.join(" "));
 }
 
 #[allow(dead_code)]
