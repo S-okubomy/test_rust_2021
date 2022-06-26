@@ -32,6 +32,7 @@ not need(docker-compose run rust bash)
 ### AWS Lambda 手順
 [リソースアップ](https://komorinfo.com/blog/rust-aws-lambda/)  
 [API Gateway](https://tech-cci.io/archives/1399)
+[クエリパラメータ反映](https://qiita.com/Quantum/items/91ad6b6b788bf4051055)  
 
 ## other 
 ### …or create a new repository on the command line
