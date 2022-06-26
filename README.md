@@ -22,6 +22,17 @@ cargo build --release
 2. docker-compose exec rust bash  
 not need(docker-compose run rust bash)
 
+### クロスコンパイル
+1. cargo lambda build --release --target x86_64-unknown-linux-gnu.2.17  
+[(参考リンク)](https://github.com/awslabs/aws-lambda-rust-runtime)  
+
+2. cd target/lambda/test_aws_lambda2  
+3. zip lambda.zip bootstrap  
+
+### AWS Lambda 手順
+[リソースアップ](https://komorinfo.com/blog/rust-aws-lambda/)  
+[API Gateway](https://tech-cci.io/archives/1399)
+
 ## other 
 ### …or create a new repository on the command line
 echo "# test_rust_2021" >> README.md  

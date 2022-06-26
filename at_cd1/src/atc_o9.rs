@@ -1,7 +1,12 @@
 use proconio::{ input };
 
 fn main() {
-    remove_it();
+    test();
+}
+
+#[allow(dead_code)]
+fn test() {
+    println!("test");
 }
 
 #[allow(dead_code)]

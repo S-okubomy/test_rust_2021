@@ -1,13 +1,20 @@
-version: '3'
- 
+version: '3.8'
+
 services:
   rust:
     container_name: rust_env
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     tty: true
+    working_dir: /workspace
     image: myrust
-    user: 1000:1000
-    environment:
-      USER: okubo
+    # user: 1000:1000
+    # environment:
+    #   USER: okubo
     volumes:
-      - .:/usr/src/myapp
+      - .:/workspace
+      - rust-target:/workspace/target
+
+volumes:
+  rust-target:
