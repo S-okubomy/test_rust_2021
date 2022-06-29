@@ -1,12 +1,23 @@
 use proconio::{ input };
 
 fn main() {
-    test();
+    magic3();
 }
 
 #[allow(dead_code)]
-fn test() {
-    println!("test");
+fn magic3() {
+    input! {
+        n: usize, s: usize, d: usize,
+        xy_vec: [(usize, usize); n],
+    }
+
+    for (x, y) in xy_vec {
+        if (x < s) && (y > d) {
+            println!("Yes");
+            return;
+        } 
+    }
+    println!("No");
 }
 
 #[allow(dead_code)]
