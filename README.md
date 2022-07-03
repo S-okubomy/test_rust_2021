@@ -34,6 +34,29 @@ not need(docker-compose run rust bash)
 [API Gateway](https://tech-cci.io/archives/1399)  
 [クエリパラメータ反映](https://qiita.com/Quantum/items/91ad6b6b788bf4051055)  
 
+### Dockerイメージのビルド
+[Rustのtensorflow](https://qiita.com/kyamamoto9120/items/9053ef667e55295e5f3f)
+
+```
+docker build -t tf-example1 .  
+docker run --rm -v "$PWD"/src:/home/src tf-example1 cargo run --release
+
+docker run --rm \
+  -v "$PWD"/src:/home/src \
+  -v "$PWD"/model.pb:/home/examples/addition/model.pb \
+  tf-example cargo run --release
+
+```
+
+
+
+### その他
+1. apt install python-pip python3-pip  
+2. /usr/local/bin/pip3 install -r requirements.txt  
+3. pip3 install -r requirements.txt  
+4. hash -r  
+
+
 ## other 
 ### …or create a new repository on the command line
 echo "# test_rust_2021" >> README.md  
