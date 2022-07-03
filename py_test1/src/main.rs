@@ -52,7 +52,7 @@ use std::env;
 fn main() -> PyResult<()> {
     let py_foo = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/python_app/utils/aiNangoQa.py"));
     let py_app = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/python_app/app2.py"));
-    let from_python = Python::with_gil(|py| -> PyResult<Py<PyAny>> {
+    let _from_python = Python::with_gil(|py| -> PyResult<Py<PyAny>> {
         PyModule::from_code(py, py_foo, "utils.aiNangoQa", "utils.aiNangoQa")?;
         let app: Py<PyAny> = PyModule::from_code(py, py_app, "", "")?
             .getattr("run")?
@@ -60,18 +60,18 @@ fn main() -> PyResult<()> {
         app.call0(py)
     });
 
-    let from_python2 = Python::with_gil(|py| -> PyResult<Py<PyAny>> {
-        // PyModule::from_code(py, py_foo, "utils.aiNangoQa", "utils.aiNangoQa")?;
-        let app: Py<PyAny> = PyModule::from_code(py, py_foo, "", "")?
-            .getattr("getAns")?
-            .into();
-        app.call0(py)
-    });
+    // let from_python2 = Python::with_gil(|py| -> PyResult<Py<PyAny>> {
+    //     // PyModule::from_code(py, py_foo, "utils.aiNangoQa", "utils.aiNangoQa")?;
+    //     let app: Py<PyAny> = PyModule::from_code(py, py_foo, "", "")?
+    //         .getattr("getAns")?
+    //         .into();
+    //     app.call0(py)
+    // });
 
 
     // println!("py: {}", from_python?);
 
-    println!("py: {}", from_python2?);
+    // println!("py: {}", from_python2?);
 
     Ok(())
 }

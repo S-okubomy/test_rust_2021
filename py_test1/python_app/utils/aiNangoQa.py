@@ -6,13 +6,13 @@ def inverse_dict(d):
     return {v:k for k,v in d.items()}
 
 # モデルを読み込む
-model = tf.keras.models.load_model('studyModel/qa_nango/hw_model.h5')
+model = tf.keras.models.load_model('python_app/studyModel/qa_nango/hw_model.h5')
 # 学習済みの重みデータを読み込む
-model.load_weights('studyModel/qa_nango/hw_weights.h5')
+model.load_weights('python_app/studyModel/qa_nango/hw_weights.h5')
 # tfidオブジェクトをファイルよりロードする
-vectorizer_loaded = pickle.load(open("studyModel/qa_nango/tfidf_vec.pickle", "rb"))
+vectorizer_loaded = pickle.load(open("python_app/studyModel/qa_nango/tfidf_vec.pickle", "rb"))
 # ラベルの定義
-labelToCode = pickle.load(open("studyModel/qa_nango/label_to_code.pickle", "rb"))
+labelToCode = pickle.load(open("python_app/studyModel/qa_nango/label_to_code.pickle", "rb"))
 label_dic = inverse_dict(labelToCode)
 # tagger = MeCab.Tagger('-d /etc/alternatives/mecab-dictionary')
 tagger = MeCab.Tagger('mecabrc')

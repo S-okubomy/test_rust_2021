@@ -1,6 +1,6 @@
 from utils.aiNangoQa import getAns
 
 def run():
-    question = "知識をたくさん付けて選択肢を増やす"
+    question = "コロナ対策を教えてください"
     ans_sentence, predict_val = getAns(question)
     print(ans_sentence, predict_val)
