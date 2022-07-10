@@ -9,12 +9,9 @@ pub fn get_tf_idf(docs: &Vec<Vec<&str>>) -> Vec<Vec<f64>> {
             tmp_words.push(w.to_string());
         }
     }
-    let mut words: HashSet<String> = tmp_words.into_iter().collect();
-    // let mut word_vec: Vec<&str> = tmp_words.into_iter().collect::<HashSet<String>>().iter().map(|s| s.as_str()).collect();
+    let words: HashSet<String> = tmp_words.into_iter().collect();
     let mut word_vec: Vec<&str> = words.iter().map(|s| s.as_str()).collect();
-    println!("{:?}", &word_vec);
     word_vec.sort();
-    println!("{:?}", &word_vec);
 
     let mut tf_idf_vec: Vec<Vec<f64>> = Vec::new();
     let n: usize = docs.len();
@@ -25,9 +22,7 @@ pub fn get_tf_idf(docs: &Vec<Vec<&str>>) -> Vec<Vec<f64>> {
             tf_idf_vec[i].push(cal_tf_idf(word, &d, &docs));
         }
     }
-    println!("{:?}", tf_idf_vec);
     tf_idf_vec
-    
 }
 
 
@@ -62,7 +57,7 @@ fn str_count(trg: &str, d: &Vec<&str>) -> usize {
 mod tests {
     use super::*; // モジュールの外側で定義したリソース使用
 
-    const ADD_EPSILON: f64 = 2.2204460492503131E-6_f64;
+    const ADD_EPSILON: f64 = 2.2204460492503131E-5_f64;
 
     #[test]
     fn str_count_test1() {
@@ -124,11 +119,33 @@ mod tests {
             vec!["猫", "小さい", "猫", "可愛い", "可愛い"],
             vec!["虫", "小さい", "可愛くない"]
         ];
-        get_tf_idf(&docs);
+
+        let exp_v_v: Vec<Vec<f64>> = vec![
+            vec![0.351366, 0.00000, 0.524653, 0.000000, 1.049306, 0.000000, 0.000000],
+            vec![0.562186, 0.000000, 0.000000, 0.281093, 0.000000, 0.839445, 0.000000],
+            vec![0.000000, 0.699537, 0.000000, 0.468488, 0.000000, 0.000000, 0.69953]
+        ];
+        assert!(judge_vec_diff(get_tf_idf(&docs), exp_v_v));
     }
 
     fn judge_diff(res: f64, exp: f64) -> bool {
         let abs_diff = (exp - res).abs();
-        abs_diff <= f64::EPSILON + ADD_EPSILON
+        abs_diff <= f64::EPSILON + ADD_EPSILON // 許容範囲を超えたらfalse
+    }
+
+    fn judge_vec_diff(res_v_v: Vec<Vec<f64>>, exp_v_v: Vec<Vec<f64>>) -> bool {
+        let n = res_v_v.len();
+        for i in 0..n {
+            let res_v = &res_v_v[i];
+            let exp_v = &exp_v_v[i];
+            let w = res_v.len();
+            for j in 0..w {
+                if !judge_diff(res_v[j], exp_v[j]) {
+                    println!("{} {}", res_v[j], exp_v[j]);
+                    return false; // 許容範囲を超えたらfalse
+                }
+            }
+        }
+        true
     }
 }

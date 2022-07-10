@@ -32,7 +32,13 @@ fn main() -> LinderaResult<()> {
         vec!["猫", "小さい", "猫", "可愛い", "可愛い"],
         vec!["虫", "小さい", "可愛くない"]
     ];
+
+    // TODO 1. 教師データ読み込んで、tf-idfベクトル作成
     tf_idf::get_tf_idf(&docs);
+
+    // TODO 2. tf-idfベクトル書き込み（学習モデル作成）
+
+    // TODO 3. 推論
 
     Ok(())
 

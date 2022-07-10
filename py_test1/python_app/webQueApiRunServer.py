@@ -43,7 +43,7 @@ def getUranaiRst():
 # 天気予報の結果を返す
 def getWeatherInfo():
     LOCATION = 'Tokyo,jp' # 場所を設定します。
-    APPID='de8940f9f25cc75800cd17380cd25ef8' # openweathermap のAPIキーを設定してください
+    APPID='xxxxxxxxxxx' # openweathermap のAPIキーを設定してください
 
     # 天気のデータを取得する
     # url ='http://api.openweathermap.org/data/2.5/forecast?q={}&cnt=10&appid={}&units=metric'\
