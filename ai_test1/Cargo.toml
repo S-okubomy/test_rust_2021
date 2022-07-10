@@ -8,5 +8,7 @@ edition = "2021"
 [dependencies]
 smartcore = "0.2.0"
 # polars = "0.22.8"
-polars-core = "0.22.7"
-polars = { version = "0.22.8", features = ["ndarray", "random"] }
+# polars-core = "0.22.7"
+# polars = { version = "0.22.8", features = ["ndarray", "random"] }
+lindera = { version = "0.14.0", features = ["full"] }
+rust-tfidf = "1.1.1"
