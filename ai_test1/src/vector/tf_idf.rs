@@ -1,7 +1,35 @@
-use std::collections::HashMap;
+use std::collections::{ HashSet, HashMap };
 
 /// TF-IDFの計算
 /// https://www.sejuku.net/blog/26420
+pub fn get_tf_idf(docs: &Vec<Vec<&str>>) -> Vec<Vec<f64>> {
+    let mut tmp_words: Vec<String> = Vec::new();
+    for doc in docs {
+        for w in doc {
+            tmp_words.push(w.to_string());
+        }
+    }
+    let mut words: HashSet<String> = tmp_words.into_iter().collect();
+    // let mut word_vec: Vec<&str> = tmp_words.into_iter().collect::<HashSet<String>>().iter().map(|s| s.as_str()).collect();
+    let mut word_vec: Vec<&str> = words.iter().map(|s| s.as_str()).collect();
+    println!("{:?}", &word_vec);
+    word_vec.sort();
+    println!("{:?}", &word_vec);
+
+    let mut tf_idf_vec: Vec<Vec<f64>> = Vec::new();
+    let n: usize = docs.len();
+    for i in 0..n {
+        tf_idf_vec.push(vec![]);
+        let d = &docs[i];
+        for word in &word_vec {
+            tf_idf_vec[i].push(cal_tf_idf(word, &d, &docs));
+        }
+    }
+    println!("{:?}", tf_idf_vec);
+    tf_idf_vec
+    
+}
+
 
 fn tf(trg: &str, d: &Vec<&str>) -> f64 {
     str_count(trg, d) as f64 / d.len() as f64
@@ -14,9 +42,11 @@ fn idf(t: &str, docs: &Vec<Vec<&str>>) -> f64 {
             df += 1.0_f64;
         }
     }
-    println!("確認: {} {} ", docs.len(), df);
     ((docs.len() as f64) / df).ln() + 1.0_f64
-    // ((docs.len() as f64) / df).log10() + 1.0_f64
+}
+
+fn cal_tf_idf(t: &str, d: &Vec<&str>, docs: &Vec<Vec<&str>>) -> f64 {
+    tf(t, d) * idf(t, docs)
 }
 
 fn str_count(trg: &str, d: &Vec<&str>) -> usize {
@@ -62,9 +92,7 @@ mod tests {
                 vec!["猫", "小さい", "猫", "可愛い", "可愛い"],
                 vec!["虫", "小さい", "可愛くない"]
         ];
-        let res: f64 = idf("可愛い", &docs);
-        let exp: f64 = 1.405465;
-        let abs_diff = (exp - res).abs();
+
         assert!(judge_diff(idf("可愛い", &docs), 1.405465));
         // println!("{}", idf("可愛くない", &docs));
         assert!(judge_diff(idf("可愛くない", &docs), 2.098612));
@@ -73,6 +101,30 @@ mod tests {
         assert!(judge_diff(idf("犬", &docs), 2.098612));
         assert!(judge_diff(idf("猫", &docs), 2.098612));
         assert!(judge_diff(idf("虫", &docs), 2.098612));
+    }
+
+    #[test]
+    fn cal_tf_idf_test1() {
+        let docs: Vec<Vec<&str>> = vec![
+                vec!["犬", "可愛い", "犬", "大きい"],
+                vec!["猫", "小さい", "猫", "可愛い", "可愛い"],
+                vec!["虫", "小さい", "可愛くない"]
+        ];
+        assert!(judge_diff(cal_tf_idf("可愛い", &docs[0], &docs), 0.351366));
+        assert!(judge_diff(cal_tf_idf("大きい", &docs[1], &docs), 0.000000));
+        assert!(judge_diff(cal_tf_idf("小さい", &docs[1], &docs), 0.281093));
+        assert!(judge_diff(cal_tf_idf("虫", &docs[2], &docs), 0.699537));
+
+    }
+
+    #[test]
+    fn get_tf_idf_test1() {
+        let docs: Vec<Vec<&str>> = vec![
+            vec!["犬", "可愛い", "犬", "大きい"],
+            vec!["猫", "小さい", "猫", "可愛い", "可愛い"],
+            vec!["虫", "小さい", "可愛くない"]
+        ];
+        get_tf_idf(&docs);
     }
 
     fn judge_diff(res: f64, exp: f64) -> bool {

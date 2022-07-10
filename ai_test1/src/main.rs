@@ -26,6 +26,14 @@ fn main() -> LinderaResult<()> {
     docs.push(doc2);
     docs.push(doc3);
 
+
+    let docs: Vec<Vec<&str>> = vec![
+        vec!["犬", "可愛い", "犬", "大きい"],
+        vec!["猫", "小さい", "猫", "可愛い", "可愛い"],
+        vec!["虫", "小さい", "可愛くない"]
+    ];
+    tf_idf::get_tf_idf(&docs);
+
     Ok(())
 
 
