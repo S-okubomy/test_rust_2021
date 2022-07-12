@@ -12,7 +12,7 @@ use nlp::tf_idf;
 
 enum ExecMode {
     Learn,
-    Predict,
+    Predict { que_sentence: String },
 }
 
 impl ExecMode {
@@ -26,7 +26,11 @@ impl ExecMode {
                 Ok(ExecMode::Learn)
             },
             "p" => {
-                Ok(ExecMode::Predict)
+                if args.len() == 3 {
+                    Ok(ExecMode::Predict { que_sentence: args[2].to_string() })
+                } else {
+                    Err("予測時は、p入力後に質問文を入力してください。".to_string())
+                }
             },
             _ => {
                 Err("学習: l、予測: p を指定してください。".to_string())
@@ -40,7 +44,9 @@ impl ExecMode {
 
 /// 使用例
 /// 学習時: ./ai_test l
-/// 予測時: ./ai_test p
+///          time cargo run l
+/// 予測時: ./ai_test p お店でギター演奏できますか？
+///         time cargo run p お店でギター演奏できますか？
 fn main() -> LinderaResult<()> {
     // コマンドライン引数を得る
     let args: Vec<String> = env::args().collect();
@@ -48,9 +54,7 @@ fn main() -> LinderaResult<()> {
         println!("error running read: {}", err);
         std::process::exit(1);
     });
-
     run(exec_mode);
-
     Ok(())
 }
 
@@ -59,8 +63,8 @@ fn run(mode: ExecMode) {
         ExecMode::Learn => {
             learn();
         },
-        ExecMode::Predict => {
-            predict();
+        ExecMode::Predict { que_sentence } => {
+            predict(que_sentence);
         },
         _ => (),
     }
@@ -82,14 +86,11 @@ fn learn() {
 
     // TODO 1. 教師データ読み込んで、tf-idfベクトル作成
     let tf_idf_res = tf_idf::TfIdf::get_tf_idf(&docs);
-    println!("{:?}", tf_idf_res.word_vec);
-    println!("{:?}", tf_idf_res.tf_idf_vec);
-
     // 学習済みモデル出力
     out_csv(tf_idf_res);
 }
 
-fn predict() {
+fn predict(que_sentence: String) {
     let qa_data: QaData = read_csv().unwrap_or_else(|err| {
         println!("error running read: {}", err);
         std::process::exit(1);
@@ -101,12 +102,11 @@ fn predict() {
     });
 
     let tfidf: tf_idf::TfIdf = read_model_csv().unwrap();
-    let trg_str: &str = "ギター演奏できる？";
-    let trg: Vec<String> = get_tokenizer(trg_str.to_string()).unwrap();
+    let trg: Vec<String> = get_tokenizer(que_sentence.to_owned()).unwrap();
     let (id, cos_val) = tf_idf::TfIdf::predict(tfidf, &docs, &trg);
     println!("id: {}", id);
     println!("cos類似度: {}", cos_val);
-    println!("質問文: {}", trg_str);
+    println!("質問文: {}", que_sentence.to_owned());
     println!("類似の質問文: {}", qa_data.que_vec[id]);
     println!("回答: {}", qa_data.ans_vec[id]);
 }
