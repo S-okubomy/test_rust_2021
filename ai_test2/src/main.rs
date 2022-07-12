@@ -52,46 +52,6 @@ fn main() -> LinderaResult<()> {
     run(exec_mode);
 
     Ok(())
-
-    // let input_qa_vec: Vec<String> = read_csv().unwrap_or_else(|err| {
-    //     println!("error running read: {}", err);
-    //     std::process::exit(1);
-    // });
-
-    // let mut docs: Vec<Vec<String>> = Vec::new();
-    // for input_qa in input_qa_vec {
-    //     let doc_vec: Vec<String> = get_tokenizer(input_qa).unwrap();
-    //     docs.push(doc_vec);
-    // }
-
-
-
-
-    // let docs: Vec<Vec<String>> = vec![
-    //     vec!["犬", "可愛い", "犬", "大きい"].iter().map(|s| s.to_string()).collect(),
-    //     vec!["猫", "小さい", "猫", "可愛い", "可愛い"].iter().map(|s| s.to_string()).collect(),
-    //     vec!["虫", "小さい", "可愛くない"].iter().map(|s| s.to_string()).collect()
-    // ];
-
-    // TODO 1. 教師データ読み込んで、tf-idfベクトル作成
-    // let tf_idf_res = tf_idf::TfIdf::get_tf_idf(&docs);
-    // println!("{:?}", tf_idf_res.word_vec);
-    // println!("{:?}", tf_idf_res.tf_idf_vec);
-
-    // TODO 2. tf-idfベクトル書き込み（学習モデル作成）
-
-    // cos類似度
-    // https://qiita.com/yonedaco/items/ef6fd0db2773f62b0f72
-    // https://w3e.kanazawa-it.ac.jp/math/category/vector/henkan-tex.cgi?target=/math/category/vector/naiseki-wo-fukumu-kihonsiki.html
-
-    // TODO 3. 推論
-
-    // if let Err(err) = read() {
-    //     println!("error running read: {}", err);
-    //     process::exit(1);
-    // }
-
-    // out_csv(tf_idf_res);
 }
 
 fn run(mode: ExecMode) {
@@ -107,13 +67,13 @@ fn run(mode: ExecMode) {
 }
 
 fn learn() {
-    let input_qa_vec: Vec<String> = read_csv().unwrap_or_else(|err| {
+    let qa_data: QaData = read_csv().unwrap_or_else(|err| {
         println!("error running read: {}", err);
         std::process::exit(1);
     });
 
     let mut docs: Vec<Vec<String>> = Vec::new();
-    for input_qa in input_qa_vec {
+    for input_qa in qa_data.que_vec {
         let doc_vec: Vec<String> = get_tokenizer(input_qa).unwrap();
         docs.push(doc_vec);
     }
@@ -128,25 +88,26 @@ fn learn() {
 }
 
 fn predict() {
-    let input_qa_vec: Vec<String> = read_csv().unwrap_or_else(|err| {
+    let qa_data: QaData = read_csv().unwrap_or_else(|err| {
         println!("error running read: {}", err);
         std::process::exit(1);
     });
 
     let mut docs: Vec<Vec<String>> = Vec::new();
-    for input_qa in input_qa_vec {
-        let doc_vec: Vec<String> = get_tokenizer(input_qa).unwrap();
+    for input_qa in &qa_data.que_vec {
+        let doc_vec: Vec<String> = get_tokenizer(input_qa.to_string()).unwrap();
         docs.push(doc_vec);
     }
 
     let tfidf: tf_idf::TfIdf = read_model_csv().unwrap();
-    println!("{:?}", tfidf);
-
-    // let trg: Vec<String> = vec!["犬", "可愛い", "犬", "大きい"].iter().map(|s| s.to_string()).collect();
-    let trg_str: &str = "楽器置いてますか？";
+    let trg_str: &str = "食事できる？";
     let trg: Vec<String> = get_tokenizer(trg_str.to_string()).unwrap();
     let (id, cos_val) = tf_idf::TfIdf::predict(tfidf, &docs, &trg);
-    println!("{} : {}", id, cos_val);
+    println!("id: {}", id);
+    println!("cos類似度: {}", cos_val);
+    println!("質問文: {}", trg_str);
+    println!("類似の質問文: {}", qa_data.que_vec[id]);
+    println!("回答: {}", qa_data.ans_vec[id]);
 }
 
 
@@ -167,62 +128,33 @@ fn get_tokenizer(doc: String) -> LinderaResult<Vec<String>> {
     Ok(docs)
 }
 
-fn _test_read() -> Result<(), Box<dyn Error>> {
-    // let mut rdr = csv::Reader::from_reader(io::stdin()); // cargo run show < input/samp.csv
-    // ファイルを開く --- (*4)
-    
-    let csv_file_path = "input/model_qa1.csv";
-    let fp = File::open(csv_file_path).unwrap();
-    let mut rdr = csv::Reader::from_reader(fp); // cargo run show < input/samp.csv
-    for result in rdr.records() {
-        let record = result?;
-        let title = &record[0];
-        let body = &record[1];
-        let detail = &record[2];
-        println!("title: {}", &title);
-        println!("body: {}", &body);
-        println!("detail: {}", &detail);
-    }
-    Ok(())
+#[derive(Debug)]
+struct QaData {
+    que_vec: Vec<String>,
+    ans_vec: Vec<String>,
 }
 
-fn read_csv() -> Result<Vec<String>, Box<dyn Error>> {
-    // let mut rdr = csv::Reader::from_reader(io::stdin()); // cargo run show < input/samp.csv
-    // ファイルを開く --- (*4)
-    
+impl QaData {
+    fn new(que_vec: Vec<String>, ans_vec: Vec<String>) -> Self {
+        Self { que_vec, ans_vec }
+    }
+}
+
+fn read_csv() -> Result<QaData, Box<dyn Error>> {
     let csv_file_path = "input/study_qa1.csv";
-    // let fp = File::open(csv_file_path).unwrap();
-    // let mut rdr = csv::Reader::from_reader(fp); // cargo run show < input/samp.csv
     let mut rdr = csv::ReaderBuilder::new()
         .has_headers(false) // ヘッダーが無い事を明示的に設定
         .from_path(csv_file_path)?;
 
-    let mut input_qa_vec: Vec<String> = Vec::new();
+    let mut que_vec: Vec<String> = Vec::new();
+    let mut ans_vec: Vec<String> = Vec::new();
     for result in rdr.records() {
         let record = result?;
-        let input_doc = record[3].to_string();
-        input_qa_vec.push(input_doc);
-        // println!("input: {}", &input_doc);
+        que_vec.push(record[3].to_string());
+        ans_vec.push(record[2].to_string())
     }
-    Ok(input_qa_vec)
+    Ok(QaData { que_vec, ans_vec })
 }
-
-// fn read_model_csv() -> Result<Vec<Vec<f64>>, Box<dyn Error>> {
-//     let model_csv_file_path = "output/model_qa1.csv";
-//     let fp = File::open(model_csv_file_path).unwrap();
-//     let mut rdr = csv::Reader::from_reader(fp);
-//     let mut tf_idf_vec: Vec<Vec<f64>> = Vec::new();
-//     for (index, result) in rdr.records().enumerate() { // ヘッダーは除く
-//         let record = result?;
-//         // println!("{:?}", record);
-//         tf_idf_vec.push(vec![]);
-//         for tf_idf_s in &record {
-//             let tf_idf_val: f64 = tf_idf_s.parse::<f64>().unwrap();
-//             tf_idf_vec[index].push(tf_idf_val);
-//         }
-//     }
-//     Ok(tf_idf_vec)
-// }
 
 fn read_model_csv() -> Result<tf_idf::TfIdf, Box<dyn Error>> {
     let model_csv_file_path = "output/model_qa1.csv";
