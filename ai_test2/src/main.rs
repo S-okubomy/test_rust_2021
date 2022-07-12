@@ -47,6 +47,7 @@ impl ExecMode {
 ///          time cargo run l
 /// 予測時: ./ai_test p お店でギター演奏できますか？
 ///         time cargo run p お店でギター演奏できますか？
+///         time ./target/release/ai_test2 p イベントの予約できますか？
 fn main() -> LinderaResult<()> {
     // コマンドライン引数を得る
     let args: Vec<String> = env::args().collect();
