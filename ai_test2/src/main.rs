@@ -78,6 +78,8 @@ fn learn() {
         docs.push(doc_vec);
     }
 
+    out_csv_word(&docs);
+
     // TODO 1. 教師データ読み込んで、tf-idfベクトル作成
     let tf_idf_res = tf_idf::TfIdf::get_tf_idf(&docs);
     println!("{:?}", tf_idf_res.word_vec);
@@ -93,14 +95,13 @@ fn predict() {
         std::process::exit(1);
     });
 
-    let mut docs: Vec<Vec<String>> = Vec::new();
-    for input_qa in &qa_data.que_vec {
-        let doc_vec: Vec<String> = get_tokenizer(input_qa.to_string()).unwrap();
-        docs.push(doc_vec);
-    }
+    let docs: Vec<Vec<String>> = read_word_list_csv().unwrap_or_else(|err| {
+        println!("error running read: {}", err);
+        std::process::exit(1);
+    });
 
     let tfidf: tf_idf::TfIdf = read_model_csv().unwrap();
-    let trg_str: &str = "食事できる？";
+    let trg_str: &str = "ギター演奏できる？";
     let trg: Vec<String> = get_tokenizer(trg_str.to_string()).unwrap();
     let (id, cos_val) = tf_idf::TfIdf::predict(tfidf, &docs, &trg);
     println!("id: {}", id);
@@ -156,6 +157,25 @@ fn read_csv() -> Result<QaData, Box<dyn Error>> {
     Ok(QaData { que_vec, ans_vec })
 }
 
+fn read_word_list_csv() -> Result<Vec<Vec<String>>, Box<dyn Error>> {
+    let csv_file_path = "output/word_list.csv";
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false) // ヘッダーが無い事を明示的に設定
+        .flexible(true) // 可変長で読み込み
+        .from_path(csv_file_path)?;
+
+    let mut word_v_v: Vec<Vec<String>> = Vec::new();
+    for (index, result) in rdr.records().enumerate() { // ヘッダーは除く
+        let record = result?;
+        word_v_v.push(vec![]);
+        for col in &record {
+            word_v_v[index].push(col.to_string());
+        }
+    }
+
+    Ok(word_v_v)
+}
+
 fn read_model_csv() -> Result<tf_idf::TfIdf, Box<dyn Error>> {
     let model_csv_file_path = "output/model_qa1.csv";
     let mut rdr = csv::ReaderBuilder::new()
@@ -207,6 +227,22 @@ fn out_csv(tf_idf_res: tf_idf::TfIdf) -> Result<(), Box<dyn Error>> {
         let mut s_vec: Vec<String> = vec![index.to_string()];
         let mut s_add_vec: Vec<String> = tf_idf_vec.iter().map(|s| s.to_string()).collect();
         s_vec.append(&mut s_add_vec);
+        wtr.write_record(s_vec)?;
+    }
+
+    wtr.flush()?;
+    Ok(())
+}
+
+fn out_csv_word(docs: &Vec<Vec<String>>) -> Result<(), Box<dyn Error>> {
+    let csv_file_out_path = "output/word_list.csv";
+    let mut wtr = csv::WriterBuilder::new()
+        .quote_style(csv::QuoteStyle::Always)
+        .flexible(true) // 可変長で書き込み
+        .from_path(csv_file_out_path)?;
+
+    for doc in docs {
+        let s_vec: Vec<String> = doc.iter().map(|s| s.to_string()).collect();
         wtr.write_record(s_vec)?;
     }
 
